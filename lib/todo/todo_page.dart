@@ -4,79 +4,26 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
-import '../utils.dart';
-
 class ToDoPage extends StatefulWidget {
+  const ToDoPage({super.key});
+
   @override
   _ToDoPageState createState() => _ToDoPageState();
 }
 
 class _ToDoPageState extends State<ToDoPage> {
-  late final ValueNotifier<List<Event>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.week;
-  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
-  DateTime _focusedDay = DateTime.now();
+  DateTime focusDay = DateTime.now();
   DateTime? _selectedDay;
-  DateTime? _rangeStart;
-  DateTime? _rangeEnd;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _selectedDay = _focusedDay;
-    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
-  }
-
-  @override
-  void dispose() {
-    _selectedEvents.dispose();
-    super.dispose();
-  }
-
-  List<Event> _getEventsForDay(DateTime day) {
-    return kEvents[day] ?? [];
-  }
-
-  List<Event> _getEventsForRange(DateTime start, DateTime end) {
-    // Implementation example
-    final days = daysInRange(start, end);
-
-    return [
-      for (final d in days) ..._getEventsForDay(d),
-    ];
-  }
+  DateTime firstDay = DateTime(DateTime.now().year, DateTime.now().month - 3, DateTime.now().day);
+  DateTime lastDay = DateTime(DateTime.now().year, DateTime.now().month + 3, DateTime.now().day);
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
       setState(() {
         _selectedDay = selectedDay;
-        _focusedDay = focusedDay;
-        _rangeStart = null; // Important to clean those
-        _rangeEnd = null;
-        _rangeSelectionMode = RangeSelectionMode.toggledOff;
+        focusDay = focusedDay;
       });
-
-      _selectedEvents.value = _getEventsForDay(selectedDay);
-    }
-  }
-
-  void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
-    setState(() {
-      _selectedDay = null;
-      _focusedDay = focusedDay;
-      _rangeStart = start;
-      _rangeEnd = end;
-      _rangeSelectionMode = RangeSelectionMode.toggledOn;
-    });
-
-    // `start` or `end` could be null
-    if (start != null && end != null) {
-      _selectedEvents.value = _getEventsForRange(start, end);
-    } else if (start != null) {
-      _selectedEvents.value = _getEventsForDay(start);
-    } else if (end != null) {
-      _selectedEvents.value = _getEventsForDay(end);
     }
   }
 
@@ -100,7 +47,7 @@ class _ToDoPageState extends State<ToDoPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    DateFormat.MMMM().format(kToday),
+                    DateFormat.MMMM().format(focusDay),
                     style: GoogleFonts.inter(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -108,7 +55,7 @@ class _ToDoPageState extends State<ToDoPage> {
                     ),
                   ),
                   Text(
-                    DateFormat.y().format(kToday),
+                    DateFormat.y().format(focusDay),
                     style: GoogleFonts.inter(
                       fontSize: 20,
                       color: kWhite,
@@ -132,7 +79,7 @@ class _ToDoPageState extends State<ToDoPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(top: 24),
-                    child: TableCalendar<Event>(
+                    child: TableCalendar(
                       calendarStyle: const CalendarStyle(
                         selectedDecoration: BoxDecoration(
                           color: kPurple,
@@ -145,17 +92,12 @@ class _ToDoPageState extends State<ToDoPage> {
                       ),
                       headerVisible: false,
                       availableGestures: AvailableGestures.none,
-                      firstDay: kFirstDay,
-                      lastDay: kLastDay,
-                      focusedDay: _focusedDay,
+                      firstDay: firstDay,
+                      lastDay: lastDay,
+                      focusedDay: focusDay,
+                      onDaySelected: _onDaySelected,
                       calendarFormat: _calendarFormat,
                       selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                      rangeStartDay: _rangeStart,
-                      rangeEndDay: _rangeEnd,
-                      rangeSelectionMode: _rangeSelectionMode,
-                      eventLoader: _getEventsForDay,
-                      onDaySelected: _onDaySelected,
-                      onRangeSelected: _onRangeSelected,
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -184,52 +126,53 @@ class _ToDoPageState extends State<ToDoPage> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Expanded(
-                    child: ValueListenableBuilder<List<Event>>(
-                      valueListenable: _selectedEvents,
-                      builder: (context, value, _) {
-                        return ListView.builder(
-                          itemCount: value.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 12.0,
-                                vertical: 4.0,
-                              ),
-                              decoration: BoxDecoration(
-                                color: kGrey,
-                                border: Border.all(),
-                                borderRadius: BorderRadius.circular(5.0),
-                              ),
-                              child: ListTile(
-                                contentPadding: const EdgeInsets.symmetric(vertical: 5),
-                                leading: const Padding(
-                                  padding: EdgeInsets.only(left: 10),
-                                  child: Icon(Icons.circle_outlined, color: kPurple),
-                                ),
-                                title: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('${value[index]}'),
-                                    const Text('Time'),
-                                  ],
-                                ),
-                                trailing: const Padding(
-                                  padding: EdgeInsets.only(right: 10),
-                                  child: Icon(Icons.circle, color: Colors.red)
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
+                  TaskCard(name: 'Mengerjakan Project', time: '09:00 - 12:00'),
+                  TaskCard(name: 'Bikin UI/Design', time: '12:00 - 14:00'),
                 ],
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class TaskCard extends StatelessWidget {
+  String name;
+  String time;
+
+  TaskCard({super.key, required this.name, required this.time});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: 12.0,
+        vertical: 4.0,
+      ),
+      decoration: BoxDecoration(
+        color: kGrey,
+        border: Border.all(),
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(vertical: 5),
+        leading: const Padding(
+          padding: EdgeInsets.only(left: 10),
+          child: Icon(Icons.circle_outlined, color: kPurple),
+        ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(name),
+            Text(time),
+          ],
+        ),
+        trailing: const Padding(
+          padding: EdgeInsets.only(right: 10),
+          child: Icon(Icons.circle, color: Colors.red)
+        ),
       ),
     );
   }
