@@ -13,8 +13,7 @@ class _CalendarPageState extends State<CalendarPage> {
   DateTime firstDay = DateTime.utc(2010, 10, 26);
   DateTime lastDay = DateTime.utc(2030, 3, 14);
 
-  void _onDaySelected(DateTime day, DateTime focusedDay) =>
-      setState(() => today = day);
+  void _onDaySelected(DateTime day, DateTime focusedDay) => setState(() => today = day);
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +25,7 @@ class _CalendarPageState extends State<CalendarPage> {
               TableCalendar(
                 locale: "en_US",
                 rowHeight: 45,
-                headerStyle: const HeaderStyle(
-                    formatButtonVisible: false, titleCentered: true),
+                headerStyle: const HeaderStyle(formatButtonVisible: false, titleCentered: true),
                 firstDay: firstDay,
                 lastDay: lastDay,
                 focusedDay: today,
@@ -50,8 +48,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -88,9 +85,7 @@ class TaskCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 5),
       width: MediaQuery.of(context).size.width - 30,
       height: 70,
-      decoration: const BoxDecoration(
-          color: Colors.amber,
-          borderRadius: BorderRadius.all(Radius.circular(10))),
+      decoration: const BoxDecoration(color: Colors.amber, borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(
