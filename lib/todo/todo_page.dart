@@ -1,10 +1,14 @@
 import 'package:do_with_me/style/colors.dart';
+import 'package:do_with_me/tasks/add_task_page.dart';
+import 'package:do_with_me/tasks/update_task_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
 class ToDoPage extends StatefulWidget {
+  static const routeName = '/to-do';
+
   const ToDoPage({super.key});
 
   @override
@@ -119,7 +123,7 @@ class _ToDoPageState extends State<ToDoPage> {
                         child: IconButton(
                           icon: const Icon(Icons.add, size: 36),
                           onPressed: () {
-                            print('Testing onPressed');
+                            Navigator.pushNamed(context, AddNewTaskPage.routeName);
                           }
                         ),
                       ),
@@ -157,6 +161,9 @@ class TaskCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(5.0),
       ),
       child: ListTile(
+        onTap: () {
+          Navigator.pushNamed(context, UpdateTaskPage.routeName);
+        },
         contentPadding: const EdgeInsets.symmetric(vertical: 5),
         leading: const Padding(
           padding: EdgeInsets.only(left: 10),
