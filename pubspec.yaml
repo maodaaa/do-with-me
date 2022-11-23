@@ -16,6 +16,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   table_calendar: ^3.0.8
   google_fonts: ^3.0.1
+  intl: ^0.17.0
+  dropdown_textfield: ^1.0.7
 
 dev_dependencies:
   flutter_test:

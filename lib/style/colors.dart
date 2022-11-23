@@ -7,6 +7,7 @@ const Color kBlack = Color(0xFF8F9BB3);
 const Color kSoftBlue = Color(0xFF8F9BB3);
 const Color kSoftGrey = Color(0xFFF6F6F5);
 const Color kGrey = Color(0xFFF4F4F4);
+const Color kRedCategory = Color(0xFFFF4C57);
 
 const kColorScheme = ColorScheme(
   primary: kPurple,
