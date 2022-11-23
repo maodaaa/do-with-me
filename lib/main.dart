@@ -24,15 +24,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'To Do',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const ToDoPage(),
-    );
-  }
-}
