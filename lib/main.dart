@@ -1,3 +1,5 @@
+import 'package:do_with_me/tasks/add_task_page.dart';
+import 'package:do_with_me/tasks/update_task_page.dart';
 import 'package:do_with_me/profil/profil.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +25,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: const ProfilPage(),
+      initialRoute: AddNewTaskPage.routeName,
+      routes: {
+        ToDoPage.routeName: (context) => const ToDoPage(),
+        AddNewTaskPage.routeName: (context) => const AddNewTaskPage(),
+        UpdateTaskPage.routeName: (context) => const UpdateTaskPage(),
+      },
+      home: const CalendarPage(),
     );
   }
 }
