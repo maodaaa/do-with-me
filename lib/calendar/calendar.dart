@@ -1,3 +1,5 @@
+import 'package:do_with_me/style/colors.dart';
+import 'package:do_with_me/style/text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -13,7 +15,8 @@ class _CalendarPageState extends State<CalendarPage> {
   DateTime firstDay = DateTime.utc(2010, 10, 26);
   DateTime lastDay = DateTime.utc(2030, 3, 14);
 
-  void _onDaySelected(DateTime day, DateTime focusedDay) => setState(() => today = day);
+  void _onDaySelected(DateTime day, DateTime focusedDay) =>
+      setState(() => today = day);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,11 @@ class _CalendarPageState extends State<CalendarPage> {
               TableCalendar(
                 locale: "en_US",
                 rowHeight: 45,
-                headerStyle: const HeaderStyle(formatButtonVisible: false, titleCentered: true),
+                headerStyle: HeaderStyle(
+                  formatButtonVisible: false,
+                  titleCentered: true,
+                  titleTextStyle: kHeading6,
+                ),
                 firstDay: firstDay,
                 lastDay: lastDay,
                 focusedDay: today,
@@ -43,18 +50,18 @@ class _CalendarPageState extends State<CalendarPage> {
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
                   ),
-                  color: Color.fromARGB(255, 151, 208, 255),
+                  color: kPurple,
                 ),
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      padding: const EdgeInsets.fromLTRB(20, 15, 10, 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             "Task",
-                            style: TextStyle(fontSize: 24),
+                            style: kHeading6,
                           ),
                           IconButton(
                             onPressed: () {},
@@ -85,19 +92,22 @@ class TaskCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 5),
       width: MediaQuery.of(context).size.width - 30,
       height: 70,
-      decoration: const BoxDecoration(color: Colors.amber, borderRadius: BorderRadius.all(Radius.circular(10))),
+      decoration: const BoxDecoration(
+          color: kSoftGrey,
+          borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
             Text(
               "Mengerjakan Project",
-              style: TextStyle(fontSize: 16),
+              style: kSubtitle,
             ),
             Text(
               "09:00 - 12:00",
-              style: TextStyle(fontSize: 16),
+              style: kBodyText,
             ),
           ],
         ),
