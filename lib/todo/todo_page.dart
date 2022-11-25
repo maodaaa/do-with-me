@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/style/colors.dart';
+import 'package:do_with_me/style/text_style.dart';
 import 'package:do_with_me/tasks/add_task_page.dart';
+import 'package:do_with_me/tasks/task_model.dart';
 import 'package:do_with_me/tasks/update_task_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
@@ -30,6 +34,11 @@ class _ToDoPageState extends State<ToDoPage> {
       });
     }
   }
+
+  final Stream<QuerySnapshot> todoStream = FirebaseFirestore.instance.collection('todos')
+    // .where('date', isEqualTo: DateFormat('dd MMMM yyyy').format(DateTime.now()))
+    .orderBy('start_time')
+    .snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -130,8 +139,41 @@ class _ToDoPageState extends State<ToDoPage> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  TaskCard(name: 'Mengerjakan Project', time: '09:00 - 12:00'),
-                  TaskCard(name: 'Bikin UI/Design', time: '12:00 - 14:00'),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: todoStream,
+                        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if(snapshot.hasError) {
+                            return const Text('Something went wrong');
+                          }
+                          if(snapshot.connectionState == ConnectionState.waiting) {
+                            return const Text('Loading');
+                          }
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: const ScrollPhysics(),
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: ((context, index) {
+                              return TaskCard(
+                                id: snapshot.data!.docs[index].id,
+                                name: snapshot.data?.docs[index]['name'],
+                                date: snapshot.data?.docs[index]['date'],
+                                sTime: snapshot.data?.docs[index]['start_time'],
+                                eTime: snapshot.data?.docs[index]['end_time'],
+                                category: snapshot.data?.docs[index]['category'],
+                                colorCategory: snapshot.data?.docs[index]['color_category'],
+                                priority: snapshot.data?.docs[index]['priority'],
+                                colorPriority: snapshot.data?.docs[index]['color_priority'],
+                                reminder: snapshot.data?.docs[index]['reminder'],
+                                notes: snapshot.data?.docs[index]['notes'],
+                              );
+                            }),
+                          );
+                        }
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -143,14 +185,82 @@ class _ToDoPageState extends State<ToDoPage> {
 }
 
 class TaskCard extends StatelessWidget {
+  String id;
   String name;
-  String time;
+  String date;
+  String sTime;
+  String eTime;
+  String category;
+  String colorCategory;
+  String priority;
+  String colorPriority;
+  String reminder;
+  String notes;
+  
 
-  TaskCard({super.key, required this.name, required this.time});
+  TaskCard({
+    super.key, 
+    required this.id, 
+    required this.name, 
+    required this.date, 
+    required this.sTime, 
+    required this.eTime,
+    required this.category,
+    required this.colorCategory,
+    required this.priority,
+    required this.colorPriority,
+    required this.reminder,
+    required this.notes,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    String valueString = colorCategory.split('(0x')[1].split(')')[0];
+    int value = int.parse(valueString, radix: 16);
+    Color otherColor = Color(value);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Slidable(
+      endActionPane: ActionPane(
+        extentRatio: 0.13,
+        motion: const DrawerMotion(),
+        children: [
+          SlidableAction(
+            borderRadius: BorderRadius.circular(10),
+            onPressed: (context) {
+              Navigator.pushNamed(context, UpdateTaskPage.routeName, arguments: Task(
+                id: id,
+                name: name, 
+                date: date, 
+                startTime: sTime, 
+                endTime: eTime, 
+                category: category, 
+                colorCategory: colorCategory, 
+                priority: priority,
+                colorPriority: colorPriority, 
+                reminder: reminder, 
+                notes: notes
+                )
+              );
+            },
+            backgroundColor: Colors.blue,
+            foregroundColor: Colors.white,
+            icon: Icons.update,
+            label: 'Update',
+          ),
+          SlidableAction(
+            borderRadius: BorderRadius.circular(10),
+            onPressed: (context) {
+              FirebaseFirestore.instance.collection("todos").doc(name).delete();
+            },
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+            icon: Icons.delete,
+            label: 'Delete',
+          ),
+        ]
+      ),
+      child: Container(
       margin: const EdgeInsets.symmetric(
         horizontal: 12.0,
         vertical: 4.0,
@@ -161,9 +271,6 @@ class TaskCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(5.0),
       ),
       child: ListTile(
-        onTap: () {
-          Navigator.pushNamed(context, UpdateTaskPage.routeName);
-        },
         contentPadding: const EdgeInsets.symmetric(vertical: 5),
         leading: const Padding(
           padding: EdgeInsets.only(left: 10),
@@ -172,15 +279,17 @@ class TaskCard extends StatelessWidget {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(name),
-            Text(time),
+            Text(name, style: kBodyText),
+            Text('$sTime - $eTime', style: kBodyText),
           ],
         ),
-        trailing: const Padding(
-          padding: EdgeInsets.only(right: 10),
-          child: Icon(Icons.circle, color: Colors.red)
+        trailing: Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: Icon(Icons.circle, color: otherColor)
         ),
       ),
+    ),
+    ),
     );
   }
 }

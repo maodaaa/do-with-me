@@ -1,5 +1,7 @@
 import 'package:do_with_me/tasks/add_task_page.dart';
+import 'package:do_with_me/tasks/task_model.dart';
 import 'package:do_with_me/tasks/update_task_page.dart';
+import 'package:do_with_me/todo/todo_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'calendar/calendar.dart';
@@ -24,11 +26,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      initialRoute: AddNewTaskPage.routeName,
+      initialRoute: ToDoPage.routeName,
       routes: {
         ToDoPage.routeName: (context) => const ToDoPage(),
         AddNewTaskPage.routeName: (context) => const AddNewTaskPage(),
-        UpdateTaskPage.routeName: (context) => const UpdateTaskPage(),
+        UpdateTaskPage.routeName: (context) => UpdateTaskPage(
+          task: ModalRoute.of(context)!.settings.arguments as Task,
+        ),
       },
       home: const CalendarPage(),
     );
