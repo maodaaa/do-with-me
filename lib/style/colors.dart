@@ -8,6 +8,11 @@ const Color kSoftBlue = Color(0xFF8F9BB3);
 const Color kSoftGrey = Color(0xFFF6F6F5);
 const Color kGrey = Color(0xFFF4F4F4);
 const Color kRedCategory = Color(0xFFFF4C57);
+const Color kYellowCategory = Color(0xFFFFEF62);
+const Color kGreenCategory = Color(0xFF84FC89);
+const Color kHighPriority = Color(0xFFFF000E);
+const Color kNormalPriority = Color(0xFF00FF66);
+const Color kLowPriority = Color(0xFFFAFF00);
 
 const kColorScheme = ColorScheme(
   primary: kPurple,
