@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:do_with_me/tasks/task_model.dart';
 import 'package:do_with_me/todo/todo_page.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
@@ -8,44 +10,93 @@ import '../style/text_style.dart';
 
 class UpdateTaskPage extends StatefulWidget {
   static const routeName = '/update-task';
+
+  final Task task;
   
-  const UpdateTaskPage({super.key});
+  const UpdateTaskPage({super.key, required this.task});
 
   @override
   State<UpdateTaskPage> createState() => _UpdateTaskPageState();
 }
 
 class _UpdateTaskPageState extends State<UpdateTaskPage> {
-  TextEditingController? taskController;
-  TextEditingController? notesController;
+  TextEditingController taskController = TextEditingController();
+  TextEditingController notesController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController sTimeController = TextEditingController();
   TextEditingController eTimeController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
   FocusNode textFieldFocusNode = FocusNode();
-  late SingleValueDropDownController _cnt;
+  late final SingleValueDropDownController _cnt = SingleValueDropDownController();
+  late final SingleValueDropDownController _cnt2 = SingleValueDropDownController();
+  late final SingleValueDropDownController _cnt3 = SingleValueDropDownController();
 
   @override
   void initState() {
-    taskController = TextEditingController();
-    notesController = TextEditingController();
-    dateController.text = "";
-    sTimeController.text = "";
-    eTimeController.text = "";
-    _cnt = SingleValueDropDownController();
+    taskController.text = widget.task.name;
+    notesController.text = widget.task.notes;
+    dateController.text = widget.task.date;
+    sTimeController.text = widget.task.startTime;
+    eTimeController.text = widget.task.endTime;
+    _cnt.dropDownValue?.name;
+    _cnt2.dropDownValue?.name;
+    _cnt3.dropDownValue?.name;
     super.initState();
   }
 
   @override
   void dispose() {
-    taskController?.dispose();
-    notesController?.dispose();
+    taskController.dispose();
+    notesController.dispose();
     dateController.dispose();
     sTimeController.dispose();
     eTimeController.dispose();
     _cnt.dispose();
+    _cnt2.dispose();
+    _cnt3.dispose();
     super.dispose();
   }
+
+  void updateTask() {
+    final taskName = taskController.text;
+    var colorCategory = "";
+    var colorPriority = "";
+    
+    if(_cnt.dropDownValue?.name == "Education") {
+      colorCategory = kRedCategory.toString();
+    } else if(_cnt.dropDownValue?.name == "Work") {
+      colorCategory = kYellowCategory.toString();
+    } else if(_cnt.dropDownValue?.name == "Workout") {
+      colorCategory = kGreenCategory.toString();
+    }
+    
+    if(_cnt2.dropDownValue?.name == "High") {
+      colorPriority = kHighPriority.toString();
+    } else if(_cnt2.dropDownValue?.name == "Normal") {
+      colorPriority = kNormalPriority.toString();
+    } else if(_cnt2.dropDownValue?.name == "Low") {
+      colorPriority = kLowPriority.toString();
+    }
+
+    FirebaseFirestore.instance.collection("todos").doc(taskName).set({
+      "name": taskName,
+      "date": dateController.text,
+      "start_time": sTimeController.text,
+      "end_time": eTimeController.text,
+      "category": _cnt.dropDownValue?.name,
+      "color_category": colorCategory,
+      "priority": _cnt2.dropDownValue?.name,
+      "color_priority": colorPriority,
+      "reminder": _cnt3.dropDownValue?.name,
+      "notes": notesController.text,
+    });
+  }
+
+  void deleteTask() {
+    final taskName = taskController.text;
+    FirebaseFirestore.instance.collection("todos").doc(taskName).delete();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +112,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
         elevation: 0.0,
         leading: IconButton(
           onPressed: () {
-            Navigator.pushNamed(context, ToDoPage.routeName);
+            Navigator.pop(context);
           },
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
         ),
@@ -78,6 +129,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                 child: TextFormField(
                   controller: taskController,
                   obscureText: false,
+                  style: kBodyText,
                   decoration: InputDecoration(
                     labelText: 'What\'s your task?',
                     labelStyle: kSubtitle.copyWith(color: kBlack),
@@ -121,6 +173,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                 child: TextField(
                   controller: dateController,
                   obscureText: false,
+                  style: kBodyText,
                   decoration: InputDecoration(
                     labelText: 'Date',
                     labelStyle: kSubtitle.copyWith(color: kBlack),
@@ -188,6 +241,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                         child: TextField(
                           controller: sTimeController,
                           obscureText: false,
+                          style: kBodyText,
                           decoration: InputDecoration(
                             labelText: 'Start Time',
                             labelStyle: kSubtitle.copyWith(color: kBlack),
@@ -255,6 +309,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                         child: TextField(
                           controller: eTimeController,
                           obscureText: false,
+                          style: kBodyText,
                           decoration: InputDecoration(
                             labelText: 'End Time',
                             labelStyle: kSubtitle.copyWith(color: kBlack),
@@ -325,6 +380,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                   padding: const EdgeInsets.all(16),
                   controller: _cnt,
                   clearOption: true,
+                  textStyle: kBodyText,
                   textFieldDecoration: InputDecoration(
                     labelText: 'Category',
                     labelStyle: kSubtitle.copyWith(color: kBlack),
@@ -376,6 +432,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     DropDownValueModel(name: 'Work', value: "Work"),
                     DropDownValueModel(name: 'Workout', value: "Workout"),
                   ],
+                  listTextStyle: kBodyText,
                   onChanged: (val) {
                   },
                 ),
@@ -384,8 +441,9 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                 padding: const EdgeInsets.all(16),
                 child: DropDownTextField(
                   padding: const EdgeInsets.all(16),
-                  controller: _cnt,
+                  controller: _cnt2,
                   clearOption: true,
+                  textStyle: kBodyText,
                   textFieldDecoration: InputDecoration(
                     labelText: 'Priority',
                     labelStyle: kSubtitle.copyWith(color: kBlack),
@@ -437,6 +495,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     DropDownValueModel(name: 'Normal', value: "Normal"),
                     DropDownValueModel(name: 'Low', value: "Low"),
                   ],
+                  listTextStyle: kBodyText,
                   onChanged: (val) {
                   },
                 ),
@@ -445,8 +504,9 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                 padding: const EdgeInsets.all(16),
                 child: DropDownTextField(
                   padding: const EdgeInsets.all(16),
-                  controller: _cnt,
+                  controller: _cnt3,
                   clearOption: true,
+                  textStyle: kBodyText,
                   textFieldDecoration: InputDecoration(
                     labelText: 'Reminder',
                     labelStyle: kSubtitle.copyWith(color: kBlack),
@@ -499,6 +559,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     DropDownValueModel(name: '30 minutes before', value: "30"),
                     DropDownValueModel(name: '1 hour before', value: "60"),
                   ],
+                  listTextStyle: kBodyText,
                   onChanged: (val) {
                   },
                 ),
@@ -508,6 +569,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                 child: TextFormField(
                   controller: notesController,
                   obscureText: false,
+                  style: kBodyText,
                   decoration: InputDecoration(
                     labelText: 'Notes',
                     labelStyle: kSubtitle.copyWith(color: kBlack),
@@ -555,13 +617,15 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () {
+                      updateTask();
+                      Navigator.pop(context);
                       print('Task Updated');
                     },
-                    child: Text('Update Task'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kPurple,
                       textStyle: kHeading6,
                     ),
+                    child: const Text('Update Task'),
                   ),
                 ),
               ),
@@ -572,13 +636,15 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () {
+                      deleteTask();
+                      Navigator.pop(context);
                       print('Task Deleted');
                     },
-                    child: Text('Delete Task'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kRedCategory,
                       textStyle: kHeading6,
                     ),
+                    child: const Text('Delete Task'),
                   ),
                 ),
               ),
