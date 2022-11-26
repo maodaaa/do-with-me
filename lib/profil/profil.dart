@@ -1,9 +1,9 @@
-import 'package:do_with_me/calendar/calendar.dart';
 import 'package:do_with_me/style/colors.dart';
 import 'package:do_with_me/style/text_style.dart';
 import 'package:flutter/material.dart';
 
 class ProfilPage extends StatelessWidget {
+  static const routeName = '/profil-page';
   const ProfilPage({super.key});
 
   @override
@@ -73,8 +73,37 @@ class ProfilPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 25),
                 const Divider(height: 1, color: Color.fromRGBO(0, 0, 0, 0.300)),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  color: kGrey,
+                  child: const ListTile(
+                    title: Text('Push Notification'),
+                  ),
+                ),
+                const Divider(height: 1, color: Color.fromRGBO(0, 0, 0, 0.300)),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  color: kGrey,
+                  child: const ListTile(
+                    title: Text('Delete Account'),
+                    trailing: Icon(Icons.chevron_right),
+                  ),
+                ),
+                const Divider(height: 1, color: Color.fromRGBO(0, 0, 0, 0.300)),
+                SizedBox(height: 200),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: kPurple,
+                    textStyle: kHeading6,
+                  ),
+                  onPressed: () {},
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                    child: Text('Logout'),
+                  ),
+                )
               ],
             ),
           ),
