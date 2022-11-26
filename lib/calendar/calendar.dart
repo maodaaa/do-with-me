@@ -1,9 +1,12 @@
 import 'package:do_with_me/style/colors.dart';
 import 'package:do_with_me/style/text_style.dart';
+import 'package:do_with_me/tasks/add_task_page.dart';
+import 'package:do_with_me/tasks/update_task_page.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPage extends StatefulWidget {
+  static const routeName = '/calendar-page';
   const CalendarPage({super.key});
 
   @override
@@ -64,14 +67,17 @@ class _CalendarPageState extends State<CalendarPage> {
                             style: kHeading6,
                           ),
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () => Navigator.pushNamed(
+                                context, AddNewTaskPage.routeName),
                             icon: const Icon(Icons.add, size: 24),
                           ),
                         ],
                       ),
                     ),
-                    const TaskCard(),
-                    const TaskCard(),
+                    const TaskCard(
+                        taskName: 'Mengerjakan Tugas', time: '10:00 - 12:00'),
+                    const TaskCard(
+                        taskName: 'Mengerjakan Tugas', time: '10:00 - 12:00'),
                   ],
                 ),
               ),
@@ -84,33 +90,23 @@ class _CalendarPageState extends State<CalendarPage> {
 }
 
 class TaskCard extends StatelessWidget {
-  const TaskCard({super.key});
+  final String taskName;
+  final String time;
+
+  const TaskCard({required this.taskName, required this.time, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 5),
       width: MediaQuery.of(context).size.width - 30,
-      height: 70,
       decoration: const BoxDecoration(
           color: kSoftGrey,
           borderRadius: BorderRadius.all(Radius.circular(10))),
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
-              "Mengerjakan Project",
-              style: kSubtitle,
-            ),
-            Text(
-              "09:00 - 12:00",
-              style: kBodyText,
-            ),
-          ],
-        ),
+      child: ListTile(
+        onTap: () => Navigator.pushNamed(context, UpdateTaskPage.routeName),
+        title: Text(taskName),
+        subtitle: Text(time),
       ),
     );
   }
