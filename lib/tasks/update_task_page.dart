@@ -8,7 +8,7 @@ import '../style/text_style.dart';
 
 class UpdateTaskPage extends StatefulWidget {
   static const routeName = '/update-task';
-  
+
   const UpdateTaskPage({super.key});
 
   @override
@@ -46,22 +46,20 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
     _cnt.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'Update Task',
-          style: TextStyle(
-            color: Colors.black, 
-            fontWeight: FontWeight.bold
-          ),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         leading: IconButton(
           onPressed: () {
-            Navigator.pushNamed(context, ToDoPage.routeName);
+            Navigator.pop(context);
           },
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
         ),
@@ -112,7 +110,8 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    contentPadding:
+                        const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                   ),
                 ),
               ),
@@ -155,25 +154,27 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    contentPadding:
+                        const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                     suffixIcon: const Icon(Icons.calendar_month),
                   ),
                   readOnly: true,
                   onTap: () async {
                     DateTime? pickedDate = await showDatePicker(
-                      context: context, initialDate: DateTime.now(),
-                      firstDate: DateTime(2000), 
-                      lastDate: DateTime(2101)
-                    );
-                    if(pickedDate != null ){
-                      print(pickedDate); 
-                      String formattedDate = DateFormat('dd MMMM yyyy').format(pickedDate); 
-                      print(formattedDate); 
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101));
+                    if (pickedDate != null) {
+                      print(pickedDate);
+                      String formattedDate =
+                          DateFormat('dd MMMM yyyy').format(pickedDate);
+                      print(formattedDate);
                       setState(() {
-                         dateController.text = formattedDate;
+                        dateController.text = formattedDate;
                       });
-                    }else{
-                        print("Date is not selected");
+                    } else {
+                      print("Date is not selected");
                     }
                   },
                 ),
@@ -183,72 +184,75 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 16),
-                        child: TextField(
-                          controller: sTimeController,
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            labelText: 'Start Time',
-                            labelStyle: kSubtitle.copyWith(color: kBlack),
-                            hintStyle: kBodyText.copyWith(color: kBlack),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color(0xFFF1F4F8),
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(15),
+                        child: Padding(
+                      padding: const EdgeInsets.only(right: 16),
+                      child: TextField(
+                        controller: sTimeController,
+                        obscureText: false,
+                        decoration: InputDecoration(
+                          labelText: 'Start Time',
+                          labelStyle: kSubtitle.copyWith(color: kBlack),
+                          hintStyle: kBodyText.copyWith(color: kBlack),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Color(0xFFF1F4F8),
+                              width: 2,
                             ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: kPurple,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color(0x00000000),
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color(0x00000000),
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            filled: true,
-                            fillColor: Colors.white,
-                            contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
-                            prefixIcon: const Icon(Icons.alarm),
+                            borderRadius: BorderRadius.circular(15),
                           ),
-                          readOnly: true,
-                          onTap: () async {
-                            TimeOfDay? pickedTime =  await showTimePicker(
-                              initialTime: TimeOfDay.now(),
-                              context: context,
-                            );
-
-                            if(pickedTime != null ){
-                                print(pickedTime.format(context)); 
-                                DateTime parsedTime = DateFormat.jm().parse(pickedTime.format(context).toString());
-                                print(parsedTime); 
-                                String formattedTime = DateFormat('HH:mm').format(parsedTime);
-                                print(formattedTime); 
-
-                                setState(() {
-                                  sTimeController.text = formattedTime; //set the value of text field. 
-                                });
-                            }else{
-                                print("Time is not selected");
-                            }
-                          },
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: kPurple,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Color(0x00000000),
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Color(0x00000000),
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          contentPadding: const EdgeInsetsDirectional.fromSTEB(
+                              16, 24, 0, 24),
+                          prefixIcon: const Icon(Icons.alarm),
                         ),
-                      )
-                    ),
+                        readOnly: true,
+                        onTap: () async {
+                          TimeOfDay? pickedTime = await showTimePicker(
+                            initialTime: TimeOfDay.now(),
+                            context: context,
+                          );
+
+                          if (pickedTime != null) {
+                            print(pickedTime.format(context));
+                            DateTime parsedTime = DateFormat.jm()
+                                .parse(pickedTime.format(context).toString());
+                            print(parsedTime);
+                            String formattedTime =
+                                DateFormat('HH:mm').format(parsedTime);
+                            print(formattedTime);
+
+                            setState(() {
+                              sTimeController.text =
+                                  formattedTime; //set the value of text field.
+                            });
+                          } else {
+                            print("Time is not selected");
+                          }
+                        },
+                      ),
+                    )),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(left: 16),
@@ -289,28 +293,33 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                             ),
                             filled: true,
                             fillColor: Colors.white,
-                            contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                            contentPadding:
+                                const EdgeInsetsDirectional.fromSTEB(
+                                    16, 24, 0, 24),
                             prefixIcon: const Icon(Icons.alarm),
                           ),
                           readOnly: true,
                           onTap: () async {
-                            TimeOfDay? pickedTime =  await showTimePicker(
+                            TimeOfDay? pickedTime = await showTimePicker(
                               initialTime: TimeOfDay.now(),
                               context: context,
                             );
 
-                            if(pickedTime != null ){
-                                print(pickedTime.format(context)); 
-                                DateTime parsedTime = DateFormat.jm().parse(pickedTime.format(context).toString());
-                                print(parsedTime); 
-                                String formattedTime = DateFormat('HH:mm').format(parsedTime);
-                                print(formattedTime); 
+                            if (pickedTime != null) {
+                              print(pickedTime.format(context));
+                              DateTime parsedTime = DateFormat.jm()
+                                  .parse(pickedTime.format(context).toString());
+                              print(parsedTime);
+                              String formattedTime =
+                                  DateFormat('HH:mm').format(parsedTime);
+                              print(formattedTime);
 
-                                setState(() {
-                                  eTimeController.text = formattedTime; //set the value of text field. 
-                                });
-                            }else{
-                                print("Time is not selected");
+                              setState(() {
+                                eTimeController.text =
+                                    formattedTime; //set the value of text field.
+                              });
+                            } else {
+                              print("Time is not selected");
                             }
                           },
                         ),
@@ -359,7 +368,8 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    contentPadding:
+                        const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                     prefixIcon: const Icon(Icons.circle, color: Colors.grey),
                   ),
                   clearIconProperty: IconProperty(color: kPurple),
@@ -376,8 +386,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     DropDownValueModel(name: 'Work', value: "Work"),
                     DropDownValueModel(name: 'Workout', value: "Workout"),
                   ],
-                  onChanged: (val) {
-                  },
+                  onChanged: (val) {},
                 ),
               ),
               Padding(
@@ -420,7 +429,8 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    contentPadding:
+                        const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                     prefixIcon: const Icon(Icons.circle, color: Colors.grey),
                   ),
                   clearIconProperty: IconProperty(color: kPurple),
@@ -437,8 +447,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     DropDownValueModel(name: 'Normal', value: "Normal"),
                     DropDownValueModel(name: 'Low', value: "Low"),
                   ],
-                  onChanged: (val) {
-                  },
+                  onChanged: (val) {},
                 ),
               ),
               Padding(
@@ -481,7 +490,8 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    contentPadding:
+                        const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                   ),
                   clearIconProperty: IconProperty(color: kPurple),
                   validator: (value) {
@@ -499,8 +509,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     DropDownValueModel(name: '30 minutes before', value: "30"),
                     DropDownValueModel(name: '1 hour before', value: "60"),
                   ],
-                  onChanged: (val) {
-                  },
+                  onChanged: (val) {},
                 ),
               ),
               Padding(
@@ -542,7 +551,8 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    contentPadding:
+                        const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                   ),
                   minLines: 5,
                   maxLines: 5,
@@ -584,7 +594,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
               ),
             ],
           ),
-        ), 
+        ),
       ),
     );
   }
