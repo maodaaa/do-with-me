@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 // text style
 final TextStyle kHeading5 = GoogleFonts.inter(fontSize: 32, fontWeight: FontWeight.w700);
 final TextStyle kHeading6 = GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w700);
+final TextStyle kHeading6Normal = GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w400);
 final TextStyle kSubtitle = GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700);
 final TextStyle kBodyText = GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w400);
 
