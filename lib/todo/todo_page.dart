@@ -145,31 +145,42 @@ class _ToDoPageState extends State<ToDoPage> {
                         stream: todoStream,
                         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                           if(snapshot.hasError) {
-                            return const Text('Something went wrong');
+                            return Text('Something went wrong', style: kHeading6Normal,);
                           }
                           if(snapshot.connectionState == ConnectionState.waiting) {
-                            return const Text('Loading');
+                            return Text('Loading', style: kHeading6Normal,);
                           }
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            physics: const ScrollPhysics(),
-                            itemCount: snapshot.data!.docs.length,
-                            itemBuilder: ((context, index) {
-                              return TaskCard(
-                                id: snapshot.data!.docs[index].id,
-                                name: snapshot.data?.docs[index]['name'],
-                                date: snapshot.data?.docs[index]['date'],
-                                sTime: snapshot.data?.docs[index]['start_time'],
-                                eTime: snapshot.data?.docs[index]['end_time'],
-                                category: snapshot.data?.docs[index]['category'],
-                                colorCategory: snapshot.data?.docs[index]['color_category'],
-                                priority: snapshot.data?.docs[index]['priority'],
-                                colorPriority: snapshot.data?.docs[index]['color_priority'],
-                                reminder: snapshot.data?.docs[index]['reminder'],
-                                notes: snapshot.data?.docs[index]['notes'],
+                          if(snapshot.hasData) {
+                            if(snapshot.data!.docs.isEmpty) {
+                              return Center(
+                                child: Text(
+                                  'No Tasks', 
+                                  style: kHeading6Normal,
+                                ),
                               );
-                            }),
-                          );
+                            }
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              physics: const ScrollPhysics(),
+                              itemCount: snapshot.data!.docs.length,
+                              itemBuilder: ((context, index) {
+                                return TaskCard(
+                                  id: snapshot.data!.docs[index].id,
+                                  name: snapshot.data?.docs[index]['name'],
+                                  date: snapshot.data?.docs[index]['date'],
+                                  sTime: snapshot.data?.docs[index]['start_time'],
+                                  eTime: snapshot.data?.docs[index]['end_time'],
+                                  category: snapshot.data?.docs[index]['category'],
+                                  colorCategory: snapshot.data?.docs[index]['color_category'],
+                                  priority: snapshot.data?.docs[index]['priority'],
+                                  colorPriority: snapshot.data?.docs[index]['color_priority'],
+                                  reminder: snapshot.data?.docs[index]['reminder'],
+                                  notes: snapshot.data?.docs[index]['notes'],
+                                );
+                              }),
+                            );
+                          }
+                          return Container();
                         }
                       ),
                     ),
