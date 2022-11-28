@@ -20,11 +20,17 @@ class ToDoPage extends StatefulWidget {
 }
 
 class _ToDoPageState extends State<ToDoPage> {
-  CalendarFormat _calendarFormat = CalendarFormat.week;
+  final CalendarFormat _calendarFormat = CalendarFormat.week;
   DateTime focusDay = DateTime.now();
   DateTime? _selectedDay;
   DateTime firstDay = DateTime(DateTime.now().year, DateTime.now().month - 3, DateTime.now().day);
   DateTime lastDay = DateTime(DateTime.now().year, DateTime.now().month + 3, DateTime.now().day);
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDay = focusDay;
+  }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
@@ -34,11 +40,6 @@ class _ToDoPageState extends State<ToDoPage> {
       });
     }
   }
-
-  final Stream<QuerySnapshot> todoStream = FirebaseFirestore.instance.collection('todos')
-    // .where('date', isEqualTo: DateFormat('dd MMMM yyyy').format(DateTime.now()))
-    .orderBy('start_time')
-    .snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +143,11 @@ class _ToDoPageState extends State<ToDoPage> {
                   Expanded(
                     child: SingleChildScrollView(
                       child: StreamBuilder<QuerySnapshot>(
-                        stream: todoStream,
+                        stream: FirebaseFirestore.instance
+                          .collection('todos')
+                          .where('date', isEqualTo: DateFormat('dd MMMM yyyy').format(_selectedDay!))
+                          .orderBy('start_time', descending: false)
+                        .snapshots(),
                         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                           if(snapshot.hasError) {
                             return Text('Something went wrong', style: kHeading6Normal,);
@@ -233,7 +238,7 @@ class TaskCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Slidable(
       endActionPane: ActionPane(
-        extentRatio: 0.13,
+        extentRatio: 0.45,
         motion: const DrawerMotion(),
         children: [
           SlidableAction(
