@@ -28,7 +28,10 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-    CollectionReference todos = FirebaseFirestore.instance.collection('todos');
+    Query<Map<String, dynamic>> todos = FirebaseFirestore.instance
+        .collection('todos')
+        .where('date', isEqualTo: formatDate(today))
+        .orderBy('start_time');
 
     return Scaffold(
       body: SafeArea(
@@ -80,7 +83,7 @@ class _CalendarPageState extends State<CalendarPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Task ${formatDate(today)}",
+                            "Task",
                             style: GoogleFonts.inter(
                               color: kWhite,
                               fontSize: 24,
@@ -119,8 +122,10 @@ class _CalendarPageState extends State<CalendarPage> {
                               );
                             },
                           );
+                        } else if (snapshot.hasError) {
+                          return const Text('Gagal Mengambil data!');
                         } else {
-                          return const Text('Gagal mengambil data!');
+                          return const Text('Kamu tidak memiliki Tugas!');
                         }
                       },
                     ),
