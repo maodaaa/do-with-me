@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:do_with_me/todo/todo_page.dart';
-import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -18,39 +16,37 @@ class AddNewTaskPage extends StatefulWidget {
 
 class _AddNewTaskPageState extends State<AddNewTaskPage> {
   TextEditingController taskController = TextEditingController();
-  TextEditingController notesController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController sTimeController = TextEditingController();
   TextEditingController eTimeController = TextEditingController();
-  FocusNode searchFocusNode = FocusNode();
-  FocusNode textFieldFocusNode = FocusNode();
-  late final SingleValueDropDownController _cnt = SingleValueDropDownController();
-  late final SingleValueDropDownController _cnt2 = SingleValueDropDownController();
-  late final SingleValueDropDownController _cnt3 = SingleValueDropDownController();
+  TextEditingController categoryController = TextEditingController();
+  TextEditingController priorityController = TextEditingController();
+  TextEditingController reminderController = TextEditingController();
+  TextEditingController notesController = TextEditingController();
 
   @override
   void initState() {
     taskController.text = "";
-    notesController.text = "";
     dateController.text = "";
     sTimeController.text = "";
     eTimeController.text = "";
-    _cnt.dropDownValue?.name;
-    _cnt2.dropDownValue?.name;
-    _cnt3.dropDownValue?.name;
+    categoryController.text = "Education";
+    priorityController.text = "High";
+    reminderController.text = "5 minutes before";
+    notesController.text = "";
     super.initState();
   }
 
   @override
   void dispose() {
     taskController.dispose();
-    notesController.dispose();
     dateController.dispose();
     sTimeController.dispose();
     eTimeController.dispose();
-    _cnt.dispose();
-    _cnt2.dispose();
-    _cnt3.dispose();
+    categoryController.dispose();
+    priorityController.dispose();
+    reminderController.dispose();
+    notesController.dispose();
     super.dispose();
   }
 
@@ -59,19 +55,19 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
     var colorCategory = "";
     var colorPriority = "";
     
-    if(_cnt.dropDownValue?.name == "Education") {
+    if(categoryController.text == "Education") {
       colorCategory = kRedCategory.toString();
-    } else if(_cnt.dropDownValue?.name == "Work") {
+    } else if(categoryController.text == "Work") {
       colorCategory = kYellowCategory.toString();
-    } else if(_cnt.dropDownValue?.name == "Workout") {
+    } else if(categoryController.text == "Workout") {
       colorCategory = kGreenCategory.toString();
     }
     
-    if(_cnt2.dropDownValue?.name == "High") {
+    if(priorityController.text == "High") {
       colorPriority = kHighPriority.toString();
-    } else if(_cnt2.dropDownValue?.name == "Normal") {
+    } else if(priorityController.text == "Normal") {
       colorPriority = kNormalPriority.toString();
-    } else if(_cnt2.dropDownValue?.name == "Low") {
+    } else if(priorityController.text == "Low") {
       colorPriority = kLowPriority.toString();
     }
 
@@ -80,11 +76,11 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
       "date": dateController.text,
       "start_time": sTimeController.text,
       "end_time": eTimeController.text,
-      "category": _cnt.dropDownValue?.name,
+      "category": categoryController.text,
       "color_category": colorCategory,
-      "priority": _cnt2.dropDownValue?.name,
+      "priority": priorityController.text,
       "color_priority": colorPriority,
-      "reminder": _cnt3.dropDownValue?.name,
+      "reminder": reminderController.text,
       "notes": notesController.text,
     });
   }
@@ -352,12 +348,25 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(16),
-                child: DropDownTextField(
-                  padding: const EdgeInsets.all(16),
-                  controller: _cnt,
-                  clearOption: true,
-                  textStyle: kBodyText,
-                  textFieldDecoration: InputDecoration(
+                child: DropdownButtonFormField<String>(
+                  value: categoryController.text,
+                  style: kBodyText,
+                  items: <String>["Education", "Work", "Workout"]
+                    .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
+                      value: value,
+                      child: Text(value == "Education"
+                        ? "Education"
+                        : value == "Work"
+                          ? "Work"
+                          : "Workout"),
+                    )
+                  ).toList(),
+                  onChanged: (String? value) {
+                    setState(() {
+                      categoryController.text = value!;
+                    });
+                  },
+                  decoration: InputDecoration(
                     labelText: 'Category',
                     labelStyle: kSubtitle.copyWith(color: kBlack),
                     hintStyle: kBodyText.copyWith(color: kBlack),
@@ -392,34 +401,38 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                     filled: true,
                     fillColor: Colors.white,
                     contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
-                    prefixIcon: const Icon(Icons.circle, color: Colors.grey),
+                    prefixIcon: Icon(
+                      Icons.circle, 
+                      color: categoryController.text == "Education"
+                        ? kRedCategory
+                        : categoryController.text == "Work"
+                          ? kYellowCategory
+                          : kGreenCategory,
+                    ),
                   ),
-                  clearIconProperty: IconProperty(color: kPurple),
-                  validator: (value) {
-                    if (value == null) {
-                      return "Required field";
-                    } else {
-                      return null;
-                    }
-                  },
-                  dropDownList: const [
-                    DropDownValueModel(name: 'Education', value: "Education"),
-                    DropDownValueModel(name: 'Work', value: "Work"),
-                    DropDownValueModel(name: 'Workout', value: "Workout"),
-                  ],
-                  listTextStyle: kBodyText,
-                  onChanged: (val) {
-                  },
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(16),
-                child: DropDownTextField(
-                  padding: const EdgeInsets.all(16),
-                  controller: _cnt2,
-                  clearOption: true,
-                  textStyle: kBodyText,
-                  textFieldDecoration: InputDecoration(
+                child: DropdownButtonFormField<String>(
+                  value: priorityController.text,
+                  style: kBodyText,
+                  items: <String>["High", "Normal", "Low"]
+                    .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
+                      value: value,
+                      child: Text(value == "High"
+                        ? "High"
+                        : value == "Normal"
+                          ? "Normal"
+                          : "Low"),
+                    )
+                  ).toList(),
+                  onChanged: (String? value) {
+                    setState(() {
+                      priorityController.text = value!;
+                    });
+                  },
+                  decoration: InputDecoration(
                     labelText: 'Priority',
                     labelStyle: kSubtitle.copyWith(color: kBlack),
                     hintStyle: kBodyText.copyWith(color: kBlack),
@@ -454,34 +467,49 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                     filled: true,
                     fillColor: Colors.white,
                     contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
-                    prefixIcon: const Icon(Icons.circle, color: Colors.grey),
+                    prefixIcon: Icon(
+                      Icons.circle, 
+                      color: priorityController.text == "High"
+                        ? kHighPriority
+                        : priorityController.text == "Normal"
+                          ? kNormalPriority
+                          : kLowPriority,
+                    ),
                   ),
-                  clearIconProperty: IconProperty(color: kPurple),
-                  validator: (value) {
-                    if (value == null) {
-                      return "Required field";
-                    } else {
-                      return null;
-                    }
-                  },
-                  dropDownList: const [
-                    DropDownValueModel(name: 'High', value: "High"),
-                    DropDownValueModel(name: 'Normal', value: "Normal"),
-                    DropDownValueModel(name: 'Low', value: "Low"),
-                  ],
-                  listTextStyle: kBodyText,
-                  onChanged: (val) {
-                  },
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(16),
-                child: DropDownTextField(
-                  padding: const EdgeInsets.all(16),
-                  controller: _cnt3,
-                  clearOption: true,
-                  textStyle: kBodyText,
-                  textFieldDecoration: InputDecoration(
+                child: DropdownButtonFormField<String>(
+                  value: reminderController.text,
+                  style: kBodyText,
+                  items: <String>[
+                    "5 minutes before", 
+                    "10 minutes before", 
+                    "15 minutes before",
+                    "30 minutes before",
+                    "1 hour before",
+                    ]
+                    .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
+                      value: value,
+                      child: Text(value == "5 minutes before"
+                        ? "5 minutes before"
+                        : value == "10 minutes before"
+                          ? "10 minutes before"
+                          : value == "15 minutes before"
+                            ? "15 minutes before"
+                            : value == "30 minutes before"
+                              ? "30 minutes before"
+                              : "1 hour before"
+                      ),
+                    )
+                  ).toList(),
+                  onChanged: (String? value) {
+                    setState(() {
+                      reminderController.text = value!;
+                    });
+                  },
+                  decoration: InputDecoration(
                     labelText: 'Reminder',
                     labelStyle: kSubtitle.copyWith(color: kBlack),
                     hintStyle: kBodyText.copyWith(color: kBlack),
@@ -517,24 +545,6 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                     fillColor: Colors.white,
                     contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                   ),
-                  clearIconProperty: IconProperty(color: kPurple),
-                  validator: (value) {
-                    if (value == null) {
-                      return "Required field";
-                    } else {
-                      return null;
-                    }
-                  },
-                  dropDownList: const [
-                    DropDownValueModel(name: '5 minutes before', value: "5"),
-                    DropDownValueModel(name: '10 minutes before', value: "10"),
-                    DropDownValueModel(name: '15 minutes before', value: "15"),
-                    DropDownValueModel(name: '30 minutes before', value: "30"),
-                    DropDownValueModel(name: '1 hour before', value: "60"),
-                  ],
-                  listTextStyle: kBodyText,
-                  onChanged: (val) {
-                  },
                 ),
               ),
               Padding(
@@ -594,11 +604,11 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                       Navigator.pop(context);
                       print('Task Added');
                     },
-                    child: Text('Add Task'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kPurple,
                       textStyle: kHeading6,
                     ),
+                    child: const Text('Add Task'),
                   ),
                 ),
               ),
