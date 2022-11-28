@@ -35,10 +35,11 @@ class _ToDoPageState extends State<ToDoPage> {
     }
   }
 
-  final Stream<QuerySnapshot> todoStream = FirebaseFirestore.instance.collection('todos')
-    // .where('date', isEqualTo: DateFormat('dd MMMM yyyy').format(DateTime.now()))
-    .orderBy('start_time')
-    .snapshots();
+  final Stream<QuerySnapshot> todoStream = FirebaseFirestore.instance
+      .collection('todos')
+      // .where('date', isEqualTo: DateFormat('dd MMMM yyyy').format(DateTime.now()))
+      .orderBy('start_time')
+      .snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,7 @@ class _ToDoPageState extends State<ToDoPage> {
             children: [
               const SizedBox(width: 24),
               const Icon(
-                Icons.calendar_month, 
+                Icons.calendar_month,
                 size: 40,
                 color: kWhite,
               ),
@@ -83,10 +84,7 @@ class _ToDoPageState extends State<ToDoPage> {
             child: Container(
               decoration: const BoxDecoration(
                 color: kWhite,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20), 
-                  topRight: Radius.circular(20)
-                ),
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
               ),
               child: Column(
                 children: [
@@ -130,11 +128,10 @@ class _ToDoPageState extends State<ToDoPage> {
                       Padding(
                         padding: const EdgeInsets.only(right: 20),
                         child: IconButton(
-                          icon: const Icon(Icons.add, size: 36),
-                          onPressed: () {
-                            Navigator.pushNamed(context, AddNewTaskPage.routeName);
-                          }
-                        ),
+                            icon: const Icon(Icons.add, size: 36),
+                            onPressed: () {
+                              Navigator.pushNamed(context, AddNewTaskPage.routeName);
+                            }),
                       ),
                     ],
                   ),
@@ -142,47 +139,52 @@ class _ToDoPageState extends State<ToDoPage> {
                   Expanded(
                     child: SingleChildScrollView(
                       child: StreamBuilder<QuerySnapshot>(
-                        stream: todoStream,
-                        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if(snapshot.hasError) {
-                            return Text('Something went wrong', style: kHeading6Normal,);
-                          }
-                          if(snapshot.connectionState == ConnectionState.waiting) {
-                            return Text('Loading', style: kHeading6Normal,);
-                          }
-                          if(snapshot.hasData) {
-                            if(snapshot.data!.docs.isEmpty) {
-                              return Center(
-                                child: Text(
-                                  'No Tasks', 
-                                  style: kHeading6Normal,
-                                ),
+                          stream: todoStream,
+                          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                            if (snapshot.hasError) {
+                              return Text(
+                                'Something went wrong',
+                                style: kHeading6Normal,
                               );
                             }
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              physics: const ScrollPhysics(),
-                              itemCount: snapshot.data!.docs.length,
-                              itemBuilder: ((context, index) {
-                                return TaskCard(
-                                  id: snapshot.data!.docs[index].id,
-                                  name: snapshot.data?.docs[index]['name'],
-                                  date: snapshot.data?.docs[index]['date'],
-                                  sTime: snapshot.data?.docs[index]['start_time'],
-                                  eTime: snapshot.data?.docs[index]['end_time'],
-                                  category: snapshot.data?.docs[index]['category'],
-                                  colorCategory: snapshot.data?.docs[index]['color_category'],
-                                  priority: snapshot.data?.docs[index]['priority'],
-                                  colorPriority: snapshot.data?.docs[index]['color_priority'],
-                                  reminder: snapshot.data?.docs[index]['reminder'],
-                                  notes: snapshot.data?.docs[index]['notes'],
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return Text(
+                                'Loading',
+                                style: kHeading6Normal,
+                              );
+                            }
+                            if (snapshot.hasData) {
+                              if (snapshot.data!.docs.isEmpty) {
+                                return Center(
+                                  child: Text(
+                                    'No Tasks',
+                                    style: kHeading6Normal,
+                                  ),
                                 );
-                              }),
-                            );
-                          }
-                          return Container();
-                        }
-                      ),
+                              }
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                physics: const ScrollPhysics(),
+                                itemCount: snapshot.data!.docs.length,
+                                itemBuilder: ((context, index) {
+                                  return TaskCard(
+                                    id: snapshot.data!.docs[index].id,
+                                    name: snapshot.data?.docs[index]['name'],
+                                    date: snapshot.data?.docs[index]['date'],
+                                    sTime: snapshot.data?.docs[index]['start_time'],
+                                    eTime: snapshot.data?.docs[index]['end_time'],
+                                    category: snapshot.data?.docs[index]['category'],
+                                    colorCategory: snapshot.data?.docs[index]['color_category'],
+                                    priority: snapshot.data?.docs[index]['priority'],
+                                    colorPriority: snapshot.data?.docs[index]['color_priority'],
+                                    reminder: snapshot.data?.docs[index]['reminder'],
+                                    notes: snapshot.data?.docs[index]['notes'],
+                                  );
+                                }),
+                              );
+                            }
+                            return Container();
+                          }),
                     ),
                   ),
                 ],
@@ -207,14 +209,13 @@ class TaskCard extends StatelessWidget {
   String colorPriority;
   String reminder;
   String notes;
-  
 
   TaskCard({
-    super.key, 
-    required this.id, 
-    required this.name, 
-    required this.date, 
-    required this.sTime, 
+    super.key,
+    required this.id,
+    required this.name,
+    required this.date,
+    required this.sTime,
     required this.eTime,
     required this.category,
     required this.colorCategory,
@@ -232,27 +233,23 @@ class TaskCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Slidable(
-      endActionPane: ActionPane(
-        extentRatio: 0.13,
-        motion: const DrawerMotion(),
-        children: [
+        endActionPane: ActionPane(extentRatio: 0.13, motion: const DrawerMotion(), children: [
           SlidableAction(
             borderRadius: BorderRadius.circular(10),
             onPressed: (context) {
-              Navigator.pushNamed(context, UpdateTaskPage.routeName, arguments: Task(
-                id: id,
-                name: name, 
-                date: date, 
-                startTime: sTime, 
-                endTime: eTime, 
-                category: category, 
-                colorCategory: colorCategory, 
-                priority: priority,
-                colorPriority: colorPriority, 
-                reminder: reminder, 
-                notes: notes
-                )
-              );
+              Navigator.pushNamed(context, UpdateTaskPage.routeName,
+                  arguments: Task(
+                      id: id,
+                      name: name,
+                      date: date,
+                      startTime: sTime,
+                      endTime: eTime,
+                      category: category,
+                      colorCategory: colorCategory,
+                      priority: priority,
+                      colorPriority: colorPriority,
+                      reminder: reminder,
+                      notes: notes));
             },
             backgroundColor: Colors.blue,
             foregroundColor: Colors.white,
@@ -269,38 +266,34 @@ class TaskCard extends StatelessWidget {
             icon: Icons.delete,
             label: 'Delete',
           ),
-        ]
-      ),
-      child: Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: 12.0,
-        vertical: 4.0,
-      ),
-      decoration: BoxDecoration(
-        color: kGrey,
-        border: Border.all(),
-        borderRadius: BorderRadius.circular(5.0),
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(vertical: 5),
-        leading: const Padding(
-          padding: EdgeInsets.only(left: 10),
-          child: Icon(Icons.circle_outlined, color: kPurple),
-        ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(name, style: kBodyText),
-            Text('$sTime - $eTime', style: kBodyText),
-          ],
-        ),
-        trailing: Padding(
-          padding: const EdgeInsets.only(right: 10),
-          child: Icon(Icons.circle, color: otherColor)
+        ]),
+        child: Container(
+          margin: const EdgeInsets.symmetric(
+            horizontal: 12.0,
+            vertical: 4.0,
+          ),
+          decoration: BoxDecoration(
+            color: kGrey,
+            border: Border.all(),
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(vertical: 5),
+            leading: const Padding(
+              padding: EdgeInsets.only(left: 10),
+              child: Icon(Icons.circle_outlined, color: kPurple),
+            ),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name, style: kBodyText),
+                Text('$sTime - $eTime', style: kBodyText),
+              ],
+            ),
+            trailing: Padding(padding: const EdgeInsets.only(right: 10), child: Icon(Icons.circle, color: otherColor)),
+          ),
         ),
       ),
-    ),
-    ),
     );
   }
 }

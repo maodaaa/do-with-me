@@ -28,30 +28,30 @@ class Task {
   });
 
   factory Task.fromJson(Map<String, dynamic> task) => Task(
-    id: task['id'],
-    name: task['name'],
-    date: task['date'],
-    startTime: task['startTime'],
-    endTime: task['endTime'],
-    category: task['category'],
-    colorCategory: task['colorCategory'],
-    priority: task['priority'],
-    colorPriority: task['colorPriority'],
-    reminder: task['reminder'],
-    notes: task['notes'],
-  );
+        id: task['id'],
+        name: task['name'],
+        date: task['date'],
+        startTime: task['startTime'],
+        endTime: task['endTime'],
+        category: task['category'],
+        colorCategory: task['colorCategory'],
+        priority: task['priority'],
+        colorPriority: task['colorPriority'],
+        reminder: task['reminder'],
+        notes: task['notes'],
+      );
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': name,
-    'date': date,
-    'startTime': startTime,
-    'endTime': endTime,
-    'category': category,
-    'colorCategory': colorCategory,
-    'priority': priority,
-    'colorPriority': colorPriority,
-    'reminder': reminder,
-    'notes': notes,
-  };
+        'id': id,
+        'name': name,
+        'date': date,
+        'startTime': startTime,
+        'endTime': endTime,
+        'category': category,
+        'colorCategory': colorCategory,
+        'priority': priority,
+        'colorPriority': colorPriority,
+        'reminder': reminder,
+        'notes': notes,
+      };
 }

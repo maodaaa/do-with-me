@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:do_with_me/login_screen/signup_screen.dart';
 import 'package:do_with_me/style/colors.dart';
 import 'package:do_with_me/style/text_style.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../widget/button.dart';
 
 class LoginScreen extends StatefulWidget {
+  static const routeName = '/login';
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
@@ -246,8 +248,9 @@ class LoginScreenState extends State<LoginScreen> {
                               print('Button-Login pressed ...');
                             },
                             text: 'Login with Google',
-                            icon: const FaIcon(
-                              FontAwesomeIcons.google,
+                            icon: Image.asset(
+                              'assets/logogoogle.png',
+                              fit: BoxFit.fill,
                             ),
                             options: FFButtonOptions(
                               width: double.infinity,
@@ -276,7 +279,7 @@ class LoginScreenState extends State<LoginScreen> {
                           ),
                           FFButtonWidget(
                             onPressed: () {
-                              print('Button pressed ...');
+                              Navigator.pushNamed(context, SignupScreen.routeName);
                             },
                             text: 'Sign Up',
                             options: FFButtonOptions(

@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../widget/button.dart';
 
 class SignupScreen extends StatefulWidget {
+  static const routeName = '/signup';
   const SignupScreen({Key? key}) : super(key: key);
 
   @override
@@ -236,7 +237,7 @@ class SignupScreenState extends State<SignupScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -286,8 +287,9 @@ class SignupScreenState extends State<SignupScreen> {
                               print('Button-Login pressed ...');
                             },
                             text: 'Sign Up with Google',
-                            icon: const FaIcon(
-                              FontAwesomeIcons.google,
+                            icon: Image.asset(
+                              'assets/logogoogle.png',
+                              fit: BoxFit.fill,
                             ),
                             options: FFButtonOptions(
                               width: double.infinity,
@@ -316,7 +318,7 @@ class SignupScreenState extends State<SignupScreen> {
                           ),
                           FFButtonWidget(
                             onPressed: () {
-                              const LoginScreen();
+                              Navigator.pushNamed(context, LoginScreen.routeName);
                             },
                             text: 'Log in',
                             options: FFButtonOptions(
