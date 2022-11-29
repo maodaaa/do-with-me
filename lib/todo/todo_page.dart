@@ -210,6 +210,7 @@ class _ToDoPageState extends State<ToDoPage> {
                                           ['reminder'],
                                       notes: snapshot.data?.docs[index]
                                           ['notes'],
+                                      finished: snapshot.data?.docs[index]['finished'],
                                     );
                                   }),
                                 );
@@ -229,7 +230,7 @@ class _ToDoPageState extends State<ToDoPage> {
   }
 }
 
-class TaskCard extends StatelessWidget {
+class TaskCard extends StatefulWidget {
   String id;
   String name;
   String date;
@@ -241,6 +242,7 @@ class TaskCard extends StatelessWidget {
   String colorPriority;
   String reminder;
   String notes;
+  bool finished;
 
   TaskCard({
     super.key,
@@ -255,11 +257,17 @@ class TaskCard extends StatelessWidget {
     required this.colorPriority,
     required this.reminder,
     required this.notes,
+    required this.finished,
   });
 
   @override
+  State<TaskCard> createState() => _TaskCardState();
+}
+
+class _TaskCardState extends State<TaskCard> {
+  @override
   Widget build(BuildContext context) {
-    String valueString = colorCategory.split('(0x')[1].split(')')[0];
+    String valueString = widget.colorCategory.split('(0x')[1].split(')')[0];
     int value = int.parse(valueString, radix: 16);
     Color otherColor = Color(value);
     return Padding(
@@ -274,17 +282,18 @@ class TaskCard extends StatelessWidget {
                 onPressed: (context) {
                   Navigator.pushNamed(context, UpdateTaskPage.routeName,
                       arguments: Task(
-                          id: id,
-                          name: name,
-                          date: date,
-                          startTime: sTime,
-                          endTime: eTime,
-                          category: category,
-                          colorCategory: colorCategory,
-                          priority: priority,
-                          colorPriority: colorPriority,
-                          reminder: reminder,
-                          notes: notes));
+                          id: widget.id,
+                          name: widget.name,
+                          date: widget.date,
+                          startTime: widget.sTime,
+                          endTime: widget.eTime,
+                          category: widget.category,
+                          colorCategory: widget.colorCategory,
+                          priority: widget.priority,
+                          colorPriority: widget.colorPriority,
+                          reminder: widget.reminder,
+                          notes: widget.notes,
+                          finished: widget.finished,));
                 },
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
@@ -296,7 +305,7 @@ class TaskCard extends StatelessWidget {
                 onPressed: (context) {
                   FirebaseFirestore.instance
                       .collection("todos")
-                      .doc(name)
+                      .doc(widget.name)
                       .delete();
                 },
                 backgroundColor: Colors.red,
@@ -316,16 +325,27 @@ class TaskCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(5.0),
           ),
           child: ListTile(
+            onTap: () {
+              setState(() {
+                widget.finished = !widget.finished;
+              });
+              FirebaseFirestore.instance
+              .collection('todos')
+              .doc(widget.name)
+              .update({'finished': widget.finished});
+            },
             contentPadding: const EdgeInsets.symmetric(vertical: 5),
-            leading: const Padding(
+            leading: Padding(
               padding: EdgeInsets.only(left: 10),
-              child: Icon(Icons.circle_outlined, color: kPurple),
+              child: widget.finished 
+                ? Icon(Icons.check_circle, color: kPurple)
+                : Icon(Icons.circle_outlined, color: kPurple),
             ),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: kBodyText),
-                Text('$sTime - $eTime', style: kBodyText),
+                Text(widget.name, style: kBodyText),
+                Text('${widget.sTime} - ${widget.eTime}', style: kBodyText),
               ],
             ),
             trailing: Padding(
