@@ -82,6 +82,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
       "color_priority": colorPriority,
       "reminder": reminderController.text,
       "notes": notesController.text,
+      "finished": false,
     });
   }
 
