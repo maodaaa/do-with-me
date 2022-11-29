@@ -28,13 +28,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      initialRoute: ToDoPage.routeName,
+      initialRoute: CalendarPage.routeName,
       routes: {
-        ToDoPage.routeName: (context) => const ToDoPage(),
-        AddNewTaskPage.routeName: (context) => const AddNewTaskPage(),
-        UpdateTaskPage.routeName: (context) => UpdateTaskPage(
-              task: ModalRoute.of(context)!.settings.arguments as Task,
-            ),
         CalendarPage.routeName: (context) => const CalendarPage(),
         ProfilPage.routeName: (context) => const ProfilPage(),
       },
