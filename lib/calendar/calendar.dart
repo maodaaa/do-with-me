@@ -2,8 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/style/colors.dart';
 import 'package:do_with_me/style/text_style.dart';
 import 'package:do_with_me/tasks/add_task_page.dart';
+import 'package:do_with_me/tasks/task_model.dart';
 import 'package:do_with_me/tasks/update_task_page.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
@@ -34,32 +37,46 @@ class _CalendarPageState extends State<CalendarPage> {
         .orderBy('start_time');
 
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            TableCalendar(
-              locale: "en_US",
-              rowHeight: 45,
-              headerStyle: HeaderStyle(
-                formatButtonVisible: false,
-                titleCentered: true,
-                titleTextStyle: kHeading6,
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Column(
+            children: [
+              TableCalendar(
+                locale: "en_US",
+                rowHeight: 45,
+                headerStyle: HeaderStyle(
+                  formatButtonVisible: false,
+                  titleCentered: true,
+                  titleTextStyle: kHeading6,
+                ),
+                calendarStyle: CalendarStyle(
+                  defaultTextStyle: kBodyText,
+                ),
+                firstDay: firstDay,
+                lastDay: lastDay,
+                focusedDay: today,
+                onDaySelected: _onDaySelected,
+                selectedDayPredicate: (day) => isSameDay(day, today),
+                onHeaderTapped: (day) {
+                  showDatePicker(
+                    context: context,
+                    initialDate: today,
+                    firstDate: firstDay,
+                    lastDate: lastDay,
+                    initialDatePickerMode: DatePickerMode.year,
+                  ).then((value) {
+                    if (value != null) {
+                      setState(() => today = value);
+                    }
+                  });
+                },
               ),
-              calendarStyle: CalendarStyle(
-                defaultTextStyle: kBodyText,
+              const SizedBox(
+                height: 20,
               ),
-              firstDay: firstDay,
-              lastDay: lastDay,
-              focusedDay: today,
-              onDaySelected: _onDaySelected,
-              selectedDayPredicate: (day) => isSameDay(day, today),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Expanded(
-              child: Container(
+              Container(
                 width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
@@ -115,25 +132,32 @@ class _CalendarPageState extends State<CalendarPage> {
                             itemCount: snapshot.data?.docs.length,
                             itemBuilder: (context, index) {
                               final todo = snapshot.data?.docs[index];
-                              return TodoCard(
-                                name: todo!['name'],
+                              Task task = Task(
+                                id: todo!.id,
+                                name: todo['name'],
+                                date: todo['date'],
                                 startTime: todo['start_time'],
                                 endTime: todo['end_time'],
+                                category: todo['category'],
+                                colorCategory: todo['color_category'],
+                                priority: todo['priority'],
+                                colorPriority: todo['color_priority'],
+                                reminder: todo['reminder'],
+                                notes: todo['notes'],
                               );
+                              return TodoCard(task: task);
                             },
                           );
-                        } else if (snapshot.hasError) {
-                          return const Text('Gagal Mengambil data!');
                         } else {
-                          return const Text('Kamu tidak memiliki Tugas!');
+                          return const Text('Gagal Mengambil data!');
                         }
                       },
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -141,16 +165,9 @@ class _CalendarPageState extends State<CalendarPage> {
 }
 
 class TodoCard extends StatelessWidget {
-  final String name;
-  final String startTime;
-  final String endTime;
+  final Task task;
 
-  const TodoCard({
-    required this.name,
-    required this.startTime,
-    required this.endTime,
-    super.key,
-  });
+  const TodoCard({required this.task, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -170,9 +187,19 @@ class TodoCard extends StatelessWidget {
         ],
       ),
       child: ListTile(
-        onTap: () => Navigator.pushNamed(context, UpdateTaskPage.routeName),
-        title: Text(name),
-        subtitle: Text('$startTime - $endTime'),
+        onTap: () => Navigator.pushNamed(context, UpdateTaskPage.routeName,
+            arguments: task),
+        leading: IconButton(
+          icon: const Icon(Icons.circle_outlined, color: kPurple, size: 30),
+          onPressed: () {},
+        ),
+        title:
+            Text(task.name, style: kSubtitle, overflow: TextOverflow.ellipsis),
+        subtitle: Text(
+          '${task.startTime} - ${task.endTime}',
+          style: kBodyText,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
     );
   }
