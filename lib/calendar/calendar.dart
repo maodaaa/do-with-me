@@ -144,6 +144,7 @@ class _CalendarPageState extends State<CalendarPage> {
                                 colorPriority: todo['color_priority'],
                                 reminder: todo['reminder'],
                                 notes: todo['notes'],
+                                finished: todo['finished'],
                               );
                               return TodoCard(task: task);
                             },
