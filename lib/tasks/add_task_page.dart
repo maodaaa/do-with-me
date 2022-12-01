@@ -595,7 +595,6 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                     onPressed: () {
                       addTask();
                       Navigator.pop(context);
-                      print('Task Added');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kPurple,

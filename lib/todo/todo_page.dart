@@ -17,7 +17,7 @@ class ToDoPage extends StatefulWidget {
   const ToDoPage({super.key});
 
   @override
-  _ToDoPageState createState() => _ToDoPageState();
+  State<ToDoPage> createState() => _ToDoPageState();
 }
 
 class _ToDoPageState extends State<ToDoPage> {
@@ -47,172 +47,170 @@ class _ToDoPageState extends State<ToDoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kPurple,
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                const SizedBox(width: 24),
-                const Icon(
-                  Icons.calendar_month,
-                  size: 40,
-                  color: kWhite,
-                ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      DateFormat.MMMM().format(focusDay),
-                      style: GoogleFonts.inter(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: kWhite,
-                      ),
+      body: Column(
+        children: [
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              const SizedBox(width: 24),
+              const Icon(
+                Icons.calendar_month,
+                size: 40,
+                color: kWhite,
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    DateFormat.MMMM().format(focusDay),
+                    style: GoogleFonts.inter(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: kWhite,
                     ),
-                    Text(
-                      DateFormat.y().format(focusDay),
-                      style: GoogleFonts.inter(
-                        fontSize: 20,
-                        color: kWhite,
-                      ),
+                  ),
+                  Text(
+                    DateFormat.y().format(focusDay),
+                    style: GoogleFonts.inter(
+                      fontSize: 20,
+                      color: kWhite,
                     ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            Expanded(
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: kWhite,
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-                ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 24),
-                      child: TableCalendar(
-                        calendarStyle: const CalendarStyle(
-                          selectedDecoration: BoxDecoration(
-                            color: kPurple,
-                            shape: BoxShape.circle,
-                          ),
-                          todayDecoration: BoxDecoration(
-                            color: kSoftBlue,
-                            shape: BoxShape.circle,
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          Expanded(
+            child: Container(
+              decoration: const BoxDecoration(
+                color: kWhite,
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+              ),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24),
+                    child: TableCalendar(
+                      calendarStyle: const CalendarStyle(
+                        selectedDecoration: BoxDecoration(
+                          color: kPurple,
+                          shape: BoxShape.circle,
+                        ),
+                        todayDecoration: BoxDecoration(
+                          color: kSoftBlue,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      headerVisible: false,
+                      availableGestures: AvailableGestures.none,
+                      firstDay: firstDay,
+                      lastDay: lastDay,
+                      focusedDay: focusDay,
+                      onDaySelected: _onDaySelected,
+                      calendarFormat: _calendarFormat,
+                      selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Text(
+                          'Tasks',
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 28,
                           ),
                         ),
-                        headerVisible: false,
-                        availableGestures: AvailableGestures.none,
-                        firstDay: firstDay,
-                        lastDay: lastDay,
-                        focusedDay: focusDay,
-                        onDaySelected: _onDaySelected,
-                        calendarFormat: _calendarFormat,
-                        selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20),
-                          child: Text(
-                            'Tasks',
-                            style: GoogleFonts.inter(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 28,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 20),
-                          child: IconButton(
+                      Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: IconButton(
                             icon: const Icon(Icons.add, size: 36),
                             onPressed: () {
                               Navigator.pushNamed(context, AddNewTaskPage.routeName);
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: SingleChildScrollView(
-                child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('todos')
-                        .where('date', isEqualTo: DateFormat('dd MMMM yyyy').format(_selectedDay!))
-                        .orderBy('start_time', descending: false)
-                        .snapshots(),
-                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasError) {
-                        return Text(
-                          'Something went wrong',
-                          style: kHeading6Normal,
-                        );
-                      }
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Text(
-                          'Loading',
-                          style: kHeading6Normal,
-                        );
-                      }
-                      if (snapshot.hasData) {
-                        if (snapshot.data!.docs.isEmpty) {
-                          return Center(
-                            child: Text(
-                              'No Tasks',
-                              style: kHeading6Normal,
-                            ),
-                          );
-                        }
-                        if (snapshot.hasData) {
-                          if (snapshot.data!.docs.isEmpty) {
-                            return Center(
-                              child: Text(
-                                'No Tasks',
-                                style: kHeading6Normal,
-                              ),
-                            );
-                          }
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            physics: const ScrollPhysics(),
-                            itemCount: snapshot.data!.docs.length,
-                            itemBuilder: ((context, index) {
-                              return TaskCard(
-                                uid: uid,
-                                id: snapshot.data!.docs[index].id,
-                                name: snapshot.data?.docs[index]['name'],
-                                date: snapshot.data?.docs[index]['date'],
-                                sTime: snapshot.data?.docs[index]['start_time'],
-                                eTime: snapshot.data?.docs[index]['end_time'],
-                                category: snapshot.data?.docs[index]['category'],
-                                colorCategory: snapshot.data?.docs[index]['color_category'],
-                                priority: snapshot.data?.docs[index]['priority'],
-                                colorPriority: snapshot.data?.docs[index]['color_priority'],
-                                reminder: snapshot.data?.docs[index]['reminder'],
-                                notes: snapshot.data?.docs[index]['notes'],
-                                finished: snapshot.data?.docs[index]['finished'],
-                              );
                             }),
-                          );
-                        }
-                      }
-                      return Container();
-                    }),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(uid)
+                              .collection("todo")
+                              .where('date', isEqualTo: DateFormat('dd MMMM yyyy').format(_selectedDay!))
+                              .orderBy('start_time', descending: false)
+                              .snapshots(),
+                          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                            if (snapshot.hasError) {
+                              return Text(
+                                'Something went wrong',
+                                style: kHeading6Normal,
+                              );
+                            }
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return Text(
+                                'Loading',
+                                style: kHeading6Normal,
+                              );
+                            }
+                            if (snapshot.hasData) {
+                              if (snapshot.data!.docs.isEmpty) {
+                                return Center(
+                                  child: Text(
+                                    'No Tasks',
+                                    style: kHeading6Normal,
+                                  ),
+                                );
+                              }
+                              if (snapshot.hasData) {
+                                if (snapshot.data!.docs.isEmpty) {
+                                  return Center(
+                                    child: Text(
+                                      'No Tasks',
+                                      style: kHeading6Normal,
+                                    ),
+                                  );
+                                }
+                                return ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const ScrollPhysics(),
+                                  itemCount: snapshot.data!.docs.length,
+                                  itemBuilder: ((context, index) {
+                                    return TaskCard(
+                                      uid: uid,
+                                      id: snapshot.data!.docs[index].id,
+                                      name: snapshot.data?.docs[index]['name'],
+                                      date: snapshot.data?.docs[index]['date'],
+                                      sTime: snapshot.data?.docs[index]['start_time'],
+                                      eTime: snapshot.data?.docs[index]['end_time'],
+                                      category: snapshot.data?.docs[index]['category'],
+                                      colorCategory: snapshot.data?.docs[index]['color_category'],
+                                      priority: snapshot.data?.docs[index]['priority'],
+                                      colorPriority: snapshot.data?.docs[index]['color_priority'],
+                                      reminder: snapshot.data?.docs[index]['reminder'],
+                                      notes: snapshot.data?.docs[index]['notes'],
+                                      finished: snapshot.data?.docs[index]['finished'],
+                                    );
+                                  }),
+                                );
+                              }
+                            }
+                            return Container();
+                          }),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -315,7 +313,12 @@ class _TaskCardState extends State<TaskCard> {
               setState(() {
                 widget.finished = !widget.finished;
               });
-              FirebaseFirestore.instance.collection('todos').doc(widget.name).update({'finished': widget.finished});
+              FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(widget.uid)
+                  .collection("todo")
+                  .doc(widget.id)
+                  .update({'finished': widget.finished});
             },
             contentPadding: const EdgeInsets.symmetric(vertical: 5),
             leading: Padding(

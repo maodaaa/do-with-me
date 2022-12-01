@@ -22,7 +22,7 @@ class FirebaseAuthService {
         await _auth.signInWithCredential(credential);
       }
     } on FirebaseAuthException catch (e) {
-      print(e.stackTrace.toString());
+      e.stackTrace.toString();
     }
   }
 
@@ -35,7 +35,7 @@ class FirebaseAuthService {
         );
       }
     } on FirebaseAuthException catch (e) {
-      print(e.stackTrace.toString());
+      e.stackTrace.toString();
     }
   }
 

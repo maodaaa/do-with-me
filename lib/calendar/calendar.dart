@@ -4,7 +4,7 @@ import 'package:do_with_me/core/styles/text_style.dart';
 import 'package:do_with_me/tasks/add_task_page.dart';
 import 'package:do_with_me/tasks/task_model.dart';
 import 'package:do_with_me/tasks/update_task_page.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,8 +30,13 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-    Query<Map<String, dynamic>> todos =
-        FirebaseFirestore.instance.collection('todos').where('date', isEqualTo: formatDate(today)).orderBy('start_time');
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
+    Query<Map<String, dynamic>> todos = FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection("todo")
+        .where('date', isEqualTo: formatDate(today))
+        .orderBy('start_time');
 
     return Scaffold(
       body: SingleChildScrollView(

@@ -246,7 +246,6 @@ class _SignInScreenState extends State<SignInScreen> {
                               }
 
                               if (users.currentUser != null) {
-                                print(users.currentUser!.uid);
                                 final uid = users.currentUser!.uid;
                                 final todoCollectionRef = firestore.collection("users").doc(uid);
                                 await todoCollectionRef.update({

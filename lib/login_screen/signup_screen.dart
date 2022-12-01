@@ -278,7 +278,6 @@ class _SignupScreenState extends State<SignupScreen> {
                               var users = FirebaseAuth.instance;
                               var firestore = FirebaseFirestore.instance;
                               if (users.currentUser != null) {
-                                print(users.currentUser!.uid);
                                 final uid = users.currentUser!.uid;
                                 final todoCollectionRef = firestore.collection("users").doc(uid);
                                 await todoCollectionRef.set({
