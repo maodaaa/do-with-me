@@ -22,7 +22,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
   TextEditingController dateController = TextEditingController();
   TextEditingController sTimeController = TextEditingController();
   TextEditingController eTimeController = TextEditingController();
-  TextEditingController categoryController= TextEditingController();
+  TextEditingController categoryController = TextEditingController();
   TextEditingController priorityController = TextEditingController();
   TextEditingController reminderController = TextEditingController();
   TextEditingController notesController = TextEditingController();
@@ -58,20 +58,20 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
     final taskNameChanged = taskController.text;
     var colorCategory = "";
     var colorPriority = "";
-    
-    if(categoryController.text == "Education") {
+
+    if (categoryController.text == "Education") {
       colorCategory = kRedCategory.toString();
-    } else if(categoryController.text == "Work") {
+    } else if (categoryController.text == "Work") {
       colorCategory = kYellowCategory.toString();
-    } else if(categoryController.text == "Workout") {
+    } else if (categoryController.text == "Workout") {
       colorCategory = kGreenCategory.toString();
     }
-    
-    if(priorityController.text == "High") {
+
+    if (priorityController.text == "High") {
       colorPriority = kHighPriority.toString();
-    } else if(priorityController.text == "Normal") {
+    } else if (priorityController.text == "Normal") {
       colorPriority = kNormalPriority.toString();
-    } else if(priorityController.text == "Low") {
+    } else if (priorityController.text == "Low") {
       colorPriority = kLowPriority.toString();
     }
 
@@ -88,6 +88,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
       "color_priority": colorPriority,
       "reminder": reminderController.text,
       "notes": notesController.text,
+      "finished": widget.task.finished,
     });
   }
 
@@ -160,7 +161,8 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    contentPadding:
+                        const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                   ),
                 ),
               ),
@@ -204,16 +206,21 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    contentPadding:
+                        const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                     suffixIcon: const Icon(Icons.calendar_month),
                   ),
                   readOnly: true,
                   onTap: () async {
                     DateTime? pickedDate = await showDatePicker(
-                        context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime(2101));
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101));
                     if (pickedDate != null) {
                       print(pickedDate);
-                      String formattedDate = DateFormat('dd MMMM yyyy').format(pickedDate);
+                      String formattedDate =
+                          DateFormat('dd MMMM yyyy').format(pickedDate);
                       print(formattedDate);
                       setState(() {
                         dateController.text = formattedDate;
@@ -269,7 +276,8 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                           ),
                           filled: true,
                           fillColor: Colors.white,
-                          contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                          contentPadding: const EdgeInsetsDirectional.fromSTEB(
+                              16, 24, 0, 24),
                           prefixIcon: const Icon(Icons.alarm),
                         ),
                         readOnly: true,
@@ -281,13 +289,16 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
 
                           if (pickedTime != null) {
                             print(pickedTime.format(context));
-                            DateTime parsedTime = DateFormat.jm().parse(pickedTime.format(context).toString());
+                            DateTime parsedTime = DateFormat.jm()
+                                .parse(pickedTime.format(context).toString());
                             print(parsedTime);
-                            String formattedTime = DateFormat('HH:mm').format(parsedTime);
+                            String formattedTime =
+                                DateFormat('HH:mm').format(parsedTime);
                             print(formattedTime);
 
                             setState(() {
-                              sTimeController.text = formattedTime; //set the value of text field.
+                              sTimeController.text =
+                                  formattedTime; //set the value of text field.
                             });
                           } else {
                             print("Time is not selected");
@@ -336,7 +347,9 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                             ),
                             filled: true,
                             fillColor: Colors.white,
-                            contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                            contentPadding:
+                                const EdgeInsetsDirectional.fromSTEB(
+                                    16, 24, 0, 24),
                             prefixIcon: const Icon(Icons.alarm),
                           ),
                           readOnly: true,
@@ -348,13 +361,16 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
 
                             if (pickedTime != null) {
                               print(pickedTime.format(context));
-                              DateTime parsedTime = DateFormat.jm().parse(pickedTime.format(context).toString());
+                              DateTime parsedTime = DateFormat.jm()
+                                  .parse(pickedTime.format(context).toString());
                               print(parsedTime);
-                              String formattedTime = DateFormat('HH:mm').format(parsedTime);
+                              String formattedTime =
+                                  DateFormat('HH:mm').format(parsedTime);
                               print(formattedTime);
 
                               setState(() {
-                                eTimeController.text = formattedTime; //set the value of text field.
+                                eTimeController.text =
+                                    formattedTime; //set the value of text field.
                               });
                             } else {
                               print("Time is not selected");
@@ -372,15 +388,16 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                   value: categoryController.text,
                   style: kBodyText,
                   items: <String>["Education", "Work", "Workout"]
-                    .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
-                      value: value,
-                      child: Text(value == "Education"
-                        ? "Education"
-                        : value == "Work"
-                          ? "Work"
-                          : "Workout"),
-                    )
-                  ).toList(),
+                      .map<DropdownMenuItem<String>>(
+                          (String value) => DropdownMenuItem(
+                                value: value,
+                                child: Text(value == "Education"
+                                    ? "Education"
+                                    : value == "Work"
+                                        ? "Work"
+                                        : "Workout"),
+                              ))
+                      .toList(),
                   onChanged: (String? value) {
                     setState(() {
                       categoryController.text = value!;
@@ -420,14 +437,15 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    contentPadding:
+                        const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                     prefixIcon: Icon(
-                      Icons.circle, 
+                      Icons.circle,
                       color: categoryController.text == "Education"
-                        ? kRedCategory
-                        : categoryController.text == "Work"
-                          ? kYellowCategory
-                          : kGreenCategory,
+                          ? kRedCategory
+                          : categoryController.text == "Work"
+                              ? kYellowCategory
+                              : kGreenCategory,
                     ),
                   ),
                 ),
@@ -438,15 +456,16 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                   value: priorityController.text,
                   style: kBodyText,
                   items: <String>["High", "Normal", "Low"]
-                    .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
-                      value: value,
-                      child: Text(value == "High"
-                        ? "High"
-                        : value == "Normal"
-                          ? "Normal"
-                          : "Low"),
-                    )
-                  ).toList(),
+                      .map<DropdownMenuItem<String>>(
+                          (String value) => DropdownMenuItem(
+                                value: value,
+                                child: Text(value == "High"
+                                    ? "High"
+                                    : value == "Normal"
+                                        ? "Normal"
+                                        : "Low"),
+                              ))
+                      .toList(),
                   onChanged: (String? value) {
                     setState(() {
                       priorityController.text = value!;
@@ -486,14 +505,15 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    contentPadding:
+                        const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                     prefixIcon: Icon(
-                      Icons.circle, 
+                      Icons.circle,
                       color: priorityController.text == "High"
-                        ? kHighPriority
-                        : priorityController.text == "Normal"
-                          ? kNormalPriority
-                          : kLowPriority,
+                          ? kHighPriority
+                          : priorityController.text == "Normal"
+                              ? kNormalPriority
+                              : kLowPriority,
                     ),
                   ),
                 ),
@@ -504,26 +524,26 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                   value: reminderController.text,
                   style: kBodyText,
                   items: <String>[
-                    "5 minutes before", 
-                    "10 minutes before", 
+                    "5 minutes before",
+                    "10 minutes before",
                     "15 minutes before",
                     "30 minutes before",
                     "1 hour before",
-                    ]
-                    .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
-                      value: value,
-                      child: Text(value == "5 minutes before"
-                        ? "5 minutes before"
-                        : value == "10 minutes before"
-                          ? "10 minutes before"
-                          : value == "15 minutes before"
-                            ? "15 minutes before"
-                            : value == "30 minutes before"
-                              ? "30 minutes before"
-                              : "1 hour before"
-                      ),
-                    )
-                  ).toList(),
+                  ]
+                      .map<DropdownMenuItem<String>>(
+                          (String value) => DropdownMenuItem(
+                                value: value,
+                                child: Text(value == "5 minutes before"
+                                    ? "5 minutes before"
+                                    : value == "10 minutes before"
+                                        ? "10 minutes before"
+                                        : value == "15 minutes before"
+                                            ? "15 minutes before"
+                                            : value == "30 minutes before"
+                                                ? "30 minutes before"
+                                                : "1 hour before"),
+                              ))
+                      .toList(),
                   onChanged: (String? value) {
                     setState(() {
                       reminderController.text = value!;
@@ -563,7 +583,8 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    contentPadding:
+                        const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                   ),
                 ),
               ),
@@ -607,7 +628,8 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    contentPadding:
+                        const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                   ),
                   minLines: 5,
                   maxLines: 5,
