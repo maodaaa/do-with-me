@@ -1,9 +1,9 @@
-import 'package:do_with_me/calendar/calendar.dart';
-import 'package:do_with_me/style/colors.dart';
-import 'package:do_with_me/style/text_style.dart';
+import 'package:do_with_me/core/styles/colors.dart';
+import 'package:do_with_me/core/styles/text_style.dart';
 import 'package:flutter/material.dart';
 
 class ProfilPage extends StatelessWidget {
+  static const routeName = '/profile';
   const ProfilPage({super.key});
 
   @override

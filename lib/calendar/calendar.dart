@@ -1,5 +1,5 @@
-import 'package:do_with_me/style/colors.dart';
-import 'package:do_with_me/style/text_style.dart';
+import 'package:do_with_me/core/styles/colors.dart';
+import 'package:do_with_me/core/styles/text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -15,8 +15,7 @@ class _CalendarPageState extends State<CalendarPage> {
   DateTime firstDay = DateTime.utc(2010, 10, 26);
   DateTime lastDay = DateTime.utc(2030, 3, 14);
 
-  void _onDaySelected(DateTime day, DateTime focusedDay) =>
-      setState(() => today = day);
+  void _onDaySelected(DateTime day, DateTime focusedDay) => setState(() => today = day);
 
   @override
   Widget build(BuildContext context) {
@@ -92,9 +91,7 @@ class TaskCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 5),
       width: MediaQuery.of(context).size.width - 30,
       height: 70,
-      decoration: const BoxDecoration(
-          color: kSoftGrey,
-          borderRadius: BorderRadius.all(Radius.circular(10))),
+      decoration: const BoxDecoration(color: kSoftGrey, borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(

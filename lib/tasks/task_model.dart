@@ -1,6 +1,7 @@
 import 'dart:core';
 
 class Task {
+  final String? uid;
   final String id;
   final String name;
   final String date;
@@ -14,6 +15,7 @@ class Task {
   final String notes;
 
   Task({
+    this.uid,
     required this.id,
     required this.name,
     required this.date,

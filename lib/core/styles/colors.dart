@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// colors
 const Color kPurple = Color(0xFF735BF2);
 const Color kWhite = Color(0xFFFFFFFF);
 const Color kBlack = Color(0xFF434343);
@@ -12,7 +11,7 @@ const Color kYellowCategory = Color(0xFFFFEF62);
 const Color kGreenCategory = Color(0xFF84FC89);
 const Color kPinkCategory = Color(0xFFD684FC);
 const Color kBrownCategory = Color(0xFFFCB684);
-const Color kCyanCategory = Color(0xFFF75DEFF);
+const Color kCyanCategory = Color(0xFFF75DEF);
 const Color kHighPriority = Color(0xFFFF000E);
 const Color kNormalPriority = Color(0xFF00FF66);
 const Color kLowPriority = Color(0xFFFAFF00);

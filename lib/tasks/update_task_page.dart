@@ -1,13 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:do_with_me/core/styles/colors.dart';
+import 'package:do_with_me/core/styles/text_style.dart';
 import 'package:do_with_me/tasks/task_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../style/colors.dart';
-import '../style/text_style.dart';
-
 class UpdateTaskPage extends StatefulWidget {
-  static const routeName = '/update-task';
+  static const routeName = '/updateTodo';
 
   final Task task;
 
@@ -22,7 +21,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
   TextEditingController dateController = TextEditingController();
   TextEditingController sTimeController = TextEditingController();
   TextEditingController eTimeController = TextEditingController();
-  TextEditingController categoryController= TextEditingController();
+  TextEditingController categoryController = TextEditingController();
   TextEditingController priorityController = TextEditingController();
   TextEditingController reminderController = TextEditingController();
   TextEditingController notesController = TextEditingController();
@@ -54,31 +53,28 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
   }
 
   void updateTask() {
-    final taskName = widget.task.name;
-    final taskNameChanged = taskController.text;
+    final taskId = widget.task.id;
+    final uid = widget.task.uid;
     var colorCategory = "";
     var colorPriority = "";
-    
-    if(categoryController.text == "Education") {
+
+    if (categoryController.text == "Education") {
       colorCategory = kRedCategory.toString();
-    } else if(categoryController.text == "Work") {
+    } else if (categoryController.text == "Work") {
       colorCategory = kYellowCategory.toString();
-    } else if(categoryController.text == "Workout") {
+    } else if (categoryController.text == "Workout") {
       colorCategory = kGreenCategory.toString();
     }
-    
-    if(priorityController.text == "High") {
+
+    if (priorityController.text == "High") {
       colorPriority = kHighPriority.toString();
-    } else if(priorityController.text == "Normal") {
+    } else if (priorityController.text == "Normal") {
       colorPriority = kNormalPriority.toString();
-    } else if(priorityController.text == "Low") {
+    } else if (priorityController.text == "Low") {
       colorPriority = kLowPriority.toString();
     }
-
-    FirebaseFirestore.instance.collection('todos').doc(taskName).delete();
-
-    FirebaseFirestore.instance.collection("todos").doc(taskNameChanged).set({
-      "name": taskNameChanged,
+    FirebaseFirestore.instance.collection("users").doc(uid).collection("todo").doc(taskId).update({
+      "name": taskController.text,
       "date": dateController.text,
       "start_time": sTimeController.text,
       "end_time": eTimeController.text,
@@ -89,15 +85,29 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
       "reminder": reminderController.text,
       "notes": notesController.text,
     });
+    // FirebaseFirestore.instance.collection('todos').doc(taskName).delete();
+
+    // FirebaseFirestore.instance.collection("todos").doc(taskNameChanged).update({
+    //   "name": taskNameChanged,
+    //   "date": dateController.text,
+    //   "start_time": sTimeController.text,
+    //   "end_time": eTimeController.text,
+    //   "category": categoryController.text,
+    //   "color_category": colorCategory,
+    //   "priority": priorityController.text,
+    //   "color_priority": colorPriority,
+    //   "reminder": reminderController.text,
+    //   "notes": notesController.text,
+    // });
   }
 
-  void deleteTask() {
-    final taskName = taskController.text;
-    FirebaseFirestore.instance.collection("todos").doc(taskName).delete();
+  void deleteTask(String taskId) {
+    FirebaseFirestore.instance.collection("users").doc().collection("todo").doc(taskId).delete();
   }
 
   @override
   Widget build(BuildContext context) {
+    final taskId = widget.task.id;
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -372,15 +382,15 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                   value: categoryController.text,
                   style: kBodyText,
                   items: <String>["Education", "Work", "Workout"]
-                    .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
-                      value: value,
-                      child: Text(value == "Education"
-                        ? "Education"
-                        : value == "Work"
-                          ? "Work"
-                          : "Workout"),
-                    )
-                  ).toList(),
+                      .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
+                            value: value,
+                            child: Text(value == "Education"
+                                ? "Education"
+                                : value == "Work"
+                                    ? "Work"
+                                    : "Workout"),
+                          ))
+                      .toList(),
                   onChanged: (String? value) {
                     setState(() {
                       categoryController.text = value!;
@@ -422,12 +432,12 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     fillColor: Colors.white,
                     contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                     prefixIcon: Icon(
-                      Icons.circle, 
+                      Icons.circle,
                       color: categoryController.text == "Education"
-                        ? kRedCategory
-                        : categoryController.text == "Work"
-                          ? kYellowCategory
-                          : kGreenCategory,
+                          ? kRedCategory
+                          : categoryController.text == "Work"
+                              ? kYellowCategory
+                              : kGreenCategory,
                     ),
                   ),
                 ),
@@ -438,15 +448,15 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                   value: priorityController.text,
                   style: kBodyText,
                   items: <String>["High", "Normal", "Low"]
-                    .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
-                      value: value,
-                      child: Text(value == "High"
-                        ? "High"
-                        : value == "Normal"
-                          ? "Normal"
-                          : "Low"),
-                    )
-                  ).toList(),
+                      .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
+                            value: value,
+                            child: Text(value == "High"
+                                ? "High"
+                                : value == "Normal"
+                                    ? "Normal"
+                                    : "Low"),
+                          ))
+                      .toList(),
                   onChanged: (String? value) {
                     setState(() {
                       priorityController.text = value!;
@@ -488,12 +498,12 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     fillColor: Colors.white,
                     contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                     prefixIcon: Icon(
-                      Icons.circle, 
+                      Icons.circle,
                       color: priorityController.text == "High"
-                        ? kHighPriority
-                        : priorityController.text == "Normal"
-                          ? kNormalPriority
-                          : kLowPriority,
+                          ? kHighPriority
+                          : priorityController.text == "Normal"
+                              ? kNormalPriority
+                              : kLowPriority,
                     ),
                   ),
                 ),
@@ -504,26 +514,25 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                   value: reminderController.text,
                   style: kBodyText,
                   items: <String>[
-                    "5 minutes before", 
-                    "10 minutes before", 
+                    "5 minutes before",
+                    "10 minutes before",
                     "15 minutes before",
                     "30 minutes before",
                     "1 hour before",
-                    ]
-                    .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
-                      value: value,
-                      child: Text(value == "5 minutes before"
-                        ? "5 minutes before"
-                        : value == "10 minutes before"
-                          ? "10 minutes before"
-                          : value == "15 minutes before"
-                            ? "15 minutes before"
-                            : value == "30 minutes before"
-                              ? "30 minutes before"
-                              : "1 hour before"
-                      ),
-                    )
-                  ).toList(),
+                  ]
+                      .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
+                            value: value,
+                            child: Text(value == "5 minutes before"
+                                ? "5 minutes before"
+                                : value == "10 minutes before"
+                                    ? "10 minutes before"
+                                    : value == "15 minutes before"
+                                        ? "15 minutes before"
+                                        : value == "30 minutes before"
+                                            ? "30 minutes before"
+                                            : "1 hour before"),
+                          ))
+                      .toList(),
                   onChanged: (String? value) {
                     setState(() {
                       reminderController.text = value!;
@@ -639,7 +648,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () {
-                      deleteTask();
+                      deleteTask(taskId);
                       Navigator.pop(context);
                       print('Task Deleted');
                     },

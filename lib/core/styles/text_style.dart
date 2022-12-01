@@ -1,4 +1,4 @@
-import 'package:do_with_me/style/colors.dart';
+import 'package:do_with_me/core/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
