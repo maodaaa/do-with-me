@@ -84,6 +84,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
       "color_priority": colorPriority,
       "reminder": reminderController.text,
       "notes": notesController.text,
+      "finished": widget.task.finished,
     });
     // FirebaseFirestore.instance.collection('todos').doc(taskName).delete();
 

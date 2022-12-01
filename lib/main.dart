@@ -44,6 +44,8 @@ class MyApp extends StatelessWidget {
         UpdateTaskPage.routeName: (context) => UpdateTaskPage(
               task: ModalRoute.of(context)!.settings.arguments as Task,
             ),
+        CalendarPage.routeName: (context) => const CalendarPage(),
+        ProfilPage.routeName: (context) => ProfilPage(),
       },
       home: const SignInScreen(),
     );

@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class AddNewTaskPage extends StatefulWidget {
-  static const routeName = '/addTodo';
+  static const routeName = '/add-task';
 
-  AddNewTaskPage({super.key});
+  const AddNewTaskPage({super.key});
 
   @override
   State<AddNewTaskPage> createState() => _AddNewTaskPageState();
@@ -82,6 +82,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
       "color_priority": colorPriority,
       "reminder": reminderController.text,
       "notes": notesController.text,
+      "finished": false,
     });
   }
 

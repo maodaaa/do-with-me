@@ -114,7 +114,7 @@ class _ToDoPageState extends State<ToDoPage> {
                         selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -131,84 +131,84 @@ class _ToDoPageState extends State<ToDoPage> {
                         Padding(
                           padding: const EdgeInsets.only(right: 20),
                           child: IconButton(
-                              icon: const Icon(Icons.add, size: 36),
-                              onPressed: () {
-                                Navigator.pushNamed(context, AddNewTaskPage.routeName);
-                              }),
+                            icon: const Icon(Icons.add, size: 36),
+                            onPressed: () {
+                              Navigator.pushNamed(context, AddNewTaskPage.routeName);
+                            },
+                          ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: StreamBuilder<QuerySnapshot>(
-                            stream: FirebaseFirestore.instance
-                                .collection('users')
-                                .doc(uid)
-                                .collection("todo")
-                                .where('date', isEqualTo: DateFormat('dd MMMM yyyy').format(_selectedDay!))
-                                .orderBy('start_time', descending: false)
-                                .snapshots(),
-                            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                              if (snapshot.hasError) {
-                                return Text(
-                                  'Something went wrong',
-                                  style: kHeading6Normal,
-                                );
-                              }
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return Text(
-                                  'Loading',
-                                  style: kHeading6Normal,
-                                );
-                              }
-                              if (snapshot.hasData) {
-                                if (snapshot.data!.docs.isEmpty) {
-                                  return Center(
-                                    child: Text(
-                                      'No Tasks',
-                                      style: kHeading6Normal,
-                                    ),
-                                  );
-                                }
-                                if (snapshot.hasData) {
-                                  if (snapshot.data!.docs.isEmpty) {
-                                    return Center(
-                                      child: Text(
-                                        'No Tasks',
-                                        style: kHeading6Normal,
-                                      ),
-                                    );
-                                  }
-                                  return ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: const ScrollPhysics(),
-                                    itemCount: snapshot.data!.docs.length,
-                                    itemBuilder: ((context, index) {
-                                      return TaskCard(
-                                        uid: uid,
-                                        id: snapshot.data!.docs[index].id,
-                                        name: snapshot.data?.docs[index]['name'],
-                                        date: snapshot.data?.docs[index]['date'],
-                                        sTime: snapshot.data?.docs[index]['start_time'],
-                                        eTime: snapshot.data?.docs[index]['end_time'],
-                                        category: snapshot.data?.docs[index]['category'],
-                                        colorCategory: snapshot.data?.docs[index]['color_category'],
-                                        priority: snapshot.data?.docs[index]['priority'],
-                                        colorPriority: snapshot.data?.docs[index]['color_priority'],
-                                        reminder: snapshot.data?.docs[index]['reminder'],
-                                        notes: snapshot.data?.docs[index]['notes'],
-                                      );
-                                    }),
-                                  );
-                                }
-                              }
-                              return Container();
-                            }),
-                      ),
-                    ),
                   ],
                 ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Expanded(
+              child: SingleChildScrollView(
+                child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('todos')
+                        .where('date', isEqualTo: DateFormat('dd MMMM yyyy').format(_selectedDay!))
+                        .orderBy('start_time', descending: false)
+                        .snapshots(),
+                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.hasError) {
+                        return Text(
+                          'Something went wrong',
+                          style: kHeading6Normal,
+                        );
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Text(
+                          'Loading',
+                          style: kHeading6Normal,
+                        );
+                      }
+                      if (snapshot.hasData) {
+                        if (snapshot.data!.docs.isEmpty) {
+                          return Center(
+                            child: Text(
+                              'No Tasks',
+                              style: kHeading6Normal,
+                            ),
+                          );
+                        }
+                        if (snapshot.hasData) {
+                          if (snapshot.data!.docs.isEmpty) {
+                            return Center(
+                              child: Text(
+                                'No Tasks',
+                                style: kHeading6Normal,
+                              ),
+                            );
+                          }
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: const ScrollPhysics(),
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: ((context, index) {
+                              return TaskCard(
+                                uid: uid,
+                                id: snapshot.data!.docs[index].id,
+                                name: snapshot.data?.docs[index]['name'],
+                                date: snapshot.data?.docs[index]['date'],
+                                sTime: snapshot.data?.docs[index]['start_time'],
+                                eTime: snapshot.data?.docs[index]['end_time'],
+                                category: snapshot.data?.docs[index]['category'],
+                                colorCategory: snapshot.data?.docs[index]['color_category'],
+                                priority: snapshot.data?.docs[index]['priority'],
+                                colorPriority: snapshot.data?.docs[index]['color_priority'],
+                                reminder: snapshot.data?.docs[index]['reminder'],
+                                notes: snapshot.data?.docs[index]['notes'],
+                                finished: snapshot.data?.docs[index]['finished'],
+                              );
+                            }),
+                          );
+                        }
+                      }
+                      return Container();
+                    }),
               ),
             ),
           ],
@@ -218,7 +218,7 @@ class _ToDoPageState extends State<ToDoPage> {
   }
 }
 
-class TaskCard extends StatelessWidget {
+class TaskCard extends StatefulWidget {
   String uid;
   String id;
   String name;
@@ -231,6 +231,7 @@ class TaskCard extends StatelessWidget {
   String colorPriority;
   String reminder;
   String notes;
+  bool finished;
 
   TaskCard({
     super.key,
@@ -246,11 +247,17 @@ class TaskCard extends StatelessWidget {
     required this.colorPriority,
     required this.reminder,
     required this.notes,
+    required this.finished,
   });
 
   @override
+  State<TaskCard> createState() => _TaskCardState();
+}
+
+class _TaskCardState extends State<TaskCard> {
+  @override
   Widget build(BuildContext context) {
-    String valueString = colorCategory.split('(0x')[1].split(')')[0];
+    String valueString = widget.colorCategory.split('(0x')[1].split(')')[0];
     int value = int.parse(valueString, radix: 16);
     Color otherColor = Color(value);
     return Padding(
@@ -262,18 +269,20 @@ class TaskCard extends StatelessWidget {
             onPressed: (context) {
               Navigator.pushNamed(context, UpdateTaskPage.routeName,
                   arguments: Task(
-                      uid: uid,
-                      id: id,
-                      name: name,
-                      date: date,
-                      startTime: sTime,
-                      endTime: eTime,
-                      category: category,
-                      colorCategory: colorCategory,
-                      priority: priority,
-                      colorPriority: colorPriority,
-                      reminder: reminder,
-                      notes: notes));
+                    uid: widget.uid,
+                    id: widget.id,
+                    name: widget.name,
+                    date: widget.date,
+                    startTime: widget.sTime,
+                    endTime: widget.eTime,
+                    category: widget.category,
+                    colorCategory: widget.colorCategory,
+                    priority: widget.priority,
+                    colorPriority: widget.colorPriority,
+                    reminder: widget.reminder,
+                    notes: widget.notes,
+                    finished: widget.finished,
+                  ));
             },
             backgroundColor: Colors.blue,
             foregroundColor: Colors.white,
@@ -283,7 +292,7 @@ class TaskCard extends StatelessWidget {
           SlidableAction(
             borderRadius: BorderRadius.circular(10),
             onPressed: (context) {
-              FirebaseFirestore.instance.collection("users").doc(uid).collection("todo").doc(id).delete();
+              FirebaseFirestore.instance.collection("users").doc(widget.uid).collection("todo").doc(widget.id).delete();
             },
             backgroundColor: Colors.red,
             foregroundColor: Colors.white,
@@ -302,16 +311,24 @@ class TaskCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(5.0),
           ),
           child: ListTile(
+            onTap: () {
+              setState(() {
+                widget.finished = !widget.finished;
+              });
+              FirebaseFirestore.instance.collection('todos').doc(widget.name).update({'finished': widget.finished});
+            },
             contentPadding: const EdgeInsets.symmetric(vertical: 5),
-            leading: const Padding(
-              padding: EdgeInsets.only(left: 10),
-              child: Icon(Icons.circle_outlined, color: kPurple),
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: widget.finished
+                  ? const Icon(Icons.check_circle, color: kPurple)
+                  : const Icon(Icons.circle_outlined, color: kPurple),
             ),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: kBodyText),
-                Text('$sTime - $eTime', style: kBodyText),
+                Text(widget.name, style: kBodyText),
+                Text('${widget.sTime} - ${widget.eTime}', style: kBodyText),
               ],
             ),
             trailing: Padding(padding: const EdgeInsets.only(right: 10), child: Icon(Icons.circle, color: otherColor)),

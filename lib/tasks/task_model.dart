@@ -13,6 +13,7 @@ class Task {
   final String colorPriority;
   final String reminder;
   final String notes;
+  final bool finished;
 
   Task({
     this.uid,
@@ -27,6 +28,7 @@ class Task {
     required this.colorPriority,
     required this.reminder,
     required this.notes,
+    required this.finished,
   });
 
   factory Task.fromJson(Map<String, dynamic> task) => Task(
@@ -41,6 +43,7 @@ class Task {
         colorPriority: task['colorPriority'],
         reminder: task['reminder'],
         notes: task['notes'],
+        finished: task['finished'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -55,5 +58,6 @@ class Task {
         'colorPriority': colorPriority,
         'reminder': reminder,
         'notes': notes,
+        'finished': finished,
       };
 }
