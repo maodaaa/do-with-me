@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:do_with_me/core/styles/colors.dart';
+import 'package:do_with_me/core/styles/text_style.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import '../style/colors.dart';
-import '../style/text_style.dart';
 
 class AddNewTaskPage extends StatefulWidget {
   static const routeName = '/add-task';
@@ -15,6 +15,7 @@ class AddNewTaskPage extends StatefulWidget {
 }
 
 class _AddNewTaskPageState extends State<AddNewTaskPage> {
+  final String uid = FirebaseAuth.instance.currentUser!.uid;
   TextEditingController taskController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController sTimeController = TextEditingController();
@@ -70,8 +71,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
     } else if (priorityController.text == "Low") {
       colorPriority = kLowPriority.toString();
     }
-
-    FirebaseFirestore.instance.collection("todos").doc(taskName).set({
+    FirebaseFirestore.instance.collection("users").doc(uid).collection("todo").doc().set({
       "name": taskName,
       "date": dateController.text,
       "start_time": sTimeController.text,
@@ -150,8 +150,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding:
-                        const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                   ),
                 ),
               ),
@@ -195,20 +194,15 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding:
-                        const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                     suffixIcon: const Icon(Icons.calendar_month),
                   ),
                   readOnly: true,
                   onTap: () async {
                     DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2101));
+                        context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime(2101));
                     if (pickedDate != null) {
-                      String formattedDate =
-                          DateFormat('dd MMMM yyyy').format(pickedDate);
+                      String formattedDate = DateFormat('dd MMMM yyyy').format(pickedDate);
                       setState(() {
                         dateController.text = formattedDate;
                       });
@@ -261,8 +255,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                           ),
                           filled: true,
                           fillColor: Colors.white,
-                          contentPadding: const EdgeInsetsDirectional.fromSTEB(
-                              16, 24, 0, 24),
+                          contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                           prefixIcon: const Icon(Icons.alarm),
                         ),
                         readOnly: true,
@@ -273,13 +266,10 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                           );
 
                           if (pickedTime != null) {
-                            DateTime parsedTime = DateFormat.jm()
-                                .parse(pickedTime.format(context).toString());
-                            String formattedTime =
-                                DateFormat('HH:mm').format(parsedTime);
+                            DateTime parsedTime = DateFormat.jm().parse(pickedTime.format(context).toString());
+                            String formattedTime = DateFormat('HH:mm').format(parsedTime);
                             setState(() {
-                              sTimeController.text =
-                                  formattedTime; //set the value of text field.
+                              sTimeController.text = formattedTime; //set the value of text field.
                             });
                           }
                         },
@@ -326,9 +316,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                             ),
                             filled: true,
                             fillColor: Colors.white,
-                            contentPadding:
-                                const EdgeInsetsDirectional.fromSTEB(
-                                    16, 24, 0, 24),
+                            contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                             prefixIcon: const Icon(Icons.alarm),
                           ),
                           readOnly: true,
@@ -339,13 +327,10 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                             );
 
                             if (pickedTime != null) {
-                              DateTime parsedTime = DateFormat.jm()
-                                  .parse(pickedTime.format(context).toString());
-                              String formattedTime =
-                                  DateFormat('HH:mm').format(parsedTime);
+                              DateTime parsedTime = DateFormat.jm().parse(pickedTime.format(context).toString());
+                              String formattedTime = DateFormat('HH:mm').format(parsedTime);
                               setState(() {
-                                eTimeController.text =
-                                    formattedTime; //set the value of text field.
+                                eTimeController.text = formattedTime; //set the value of text field.
                               });
                             }
                           },
@@ -361,15 +346,14 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                   value: categoryController.text,
                   style: kBodyText,
                   items: <String>["Education", "Work", "Workout"]
-                      .map<DropdownMenuItem<String>>(
-                          (String value) => DropdownMenuItem(
-                                value: value,
-                                child: Text(value == "Education"
-                                    ? "Education"
-                                    : value == "Work"
-                                        ? "Work"
-                                        : "Workout"),
-                              ))
+                      .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
+                            value: value,
+                            child: Text(value == "Education"
+                                ? "Education"
+                                : value == "Work"
+                                    ? "Work"
+                                    : "Workout"),
+                          ))
                       .toList(),
                   onChanged: (String? value) {
                     setState(() {
@@ -410,8 +394,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding:
-                        const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                     prefixIcon: Icon(
                       Icons.circle,
                       color: categoryController.text == "Education"
@@ -429,15 +412,14 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                   value: priorityController.text,
                   style: kBodyText,
                   items: <String>["High", "Normal", "Low"]
-                      .map<DropdownMenuItem<String>>(
-                          (String value) => DropdownMenuItem(
-                                value: value,
-                                child: Text(value == "High"
-                                    ? "High"
-                                    : value == "Normal"
-                                        ? "Normal"
-                                        : "Low"),
-                              ))
+                      .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
+                            value: value,
+                            child: Text(value == "High"
+                                ? "High"
+                                : value == "Normal"
+                                    ? "Normal"
+                                    : "Low"),
+                          ))
                       .toList(),
                   onChanged: (String? value) {
                     setState(() {
@@ -478,8 +460,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding:
-                        const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                     prefixIcon: Icon(
                       Icons.circle,
                       color: priorityController.text == "High"
@@ -503,19 +484,18 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                     "30 minutes before",
                     "1 hour before",
                   ]
-                      .map<DropdownMenuItem<String>>(
-                          (String value) => DropdownMenuItem(
-                                value: value,
-                                child: Text(value == "5 minutes before"
-                                    ? "5 minutes before"
-                                    : value == "10 minutes before"
-                                        ? "10 minutes before"
-                                        : value == "15 minutes before"
-                                            ? "15 minutes before"
-                                            : value == "30 minutes before"
-                                                ? "30 minutes before"
-                                                : "1 hour before"),
-                              ))
+                      .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
+                            value: value,
+                            child: Text(value == "5 minutes before"
+                                ? "5 minutes before"
+                                : value == "10 minutes before"
+                                    ? "10 minutes before"
+                                    : value == "15 minutes before"
+                                        ? "15 minutes before"
+                                        : value == "30 minutes before"
+                                            ? "30 minutes before"
+                                            : "1 hour before"),
+                          ))
                       .toList(),
                   onChanged: (String? value) {
                     setState(() {
@@ -556,8 +536,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding:
-                        const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                   ),
                 ),
               ),
@@ -601,8 +580,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                     ),
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding:
-                        const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                   ),
                   minLines: 5,
                   maxLines: 5,
@@ -617,7 +595,6 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                     onPressed: () {
                       addTask();
                       Navigator.pop(context);
-                      print('Task Added');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kPurple,

@@ -1,5 +1,5 @@
 import 'package:do_with_me/home_screen/home_screen.dart';
-import 'package:do_with_me/login_screen/login_screen.dart';
+import 'package:do_with_me/login_screen/signin_screen.dart';
 import 'package:do_with_me/login_screen/signup_screen.dart';
 import 'package:do_with_me/tasks/add_task_page.dart';
 import 'package:do_with_me/tasks/task_model.dart';
@@ -35,9 +35,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      initialRoute: LoginScreen.routeName,
+      initialRoute: SignInScreen.routeName,
       routes: {
-        LoginScreen.routeName: (context) => const LoginScreen(),
+        SignInScreen.routeName: (context) => const SignInScreen(),
         SignupScreen.routeName: (context) => const SignupScreen(),
         HomeScreen.routeName: (context) => const HomeScreen(),
         ToDoPage.routeName: (context) => const ToDoPage(),
@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         CalendarPage.routeName: (context) => const CalendarPage(),
         ProfilPage.routeName: (context) => const ProfilPage(),
       },
-      home: const LoginScreen(),
+      home: const SignInScreen(),
     );
   }
 }

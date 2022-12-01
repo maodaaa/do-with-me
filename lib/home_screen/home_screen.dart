@@ -1,21 +1,32 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:do_with_me/style/colors.dart';
-import 'package:do_with_me/style/text_style.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:do_with_me/core/styles/colors.dart';
+import 'package:do_with_me/core/styles/text_style.dart';
+import 'package:do_with_me/todo/todo_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import '../todo/todo_page.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
-  static const routeName = '/HomeScreen2';
+  static const routeName = '/home';
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  DateTime focusDay = DateTime.now();
+  DateTime? _selectedDay;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDay = focusDay;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final auth = FirebaseAuth.instance;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -41,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Text(
-                                'Welcome, Jhon',
+                                "${auth.currentUser!.displayName}",
                                 style: kHeading5.copyWith(color: kWhite),
                               ),
                             ],
@@ -77,7 +88,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     child: Column(
-                      mainAxisSize: MainAxisSize.max,
                       children: [
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(17, 16, 17, 0),
@@ -110,16 +120,61 @@ class _HomeScreenState extends State<HomeScreen> {
                             ],
                           ),
                         ),
-                        TaskCard(
-                          taskName: "ngerjain pr sekolaaah",
-                          startTime: "10.10",
-                          endTime: "11.11",
-                        ),
-                        TaskCard(
-                          taskName: "belanja kepasar",
-                          startTime: "11.30",
-                          endTime: "12.30",
-                        ),
+                        StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(auth.currentUser!.uid)
+                                .collection("todo")
+                                .where('date', isEqualTo: DateFormat('dd MMMM yyyy').format(_selectedDay!))
+                                .orderBy('start_time', descending: false)
+                                .limit(2)
+                                .snapshots(),
+                            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                              if (snapshot.hasError) {
+                                return Text(
+                                  'Something went wrong',
+                                  style: kHeading6Normal,
+                                );
+                              }
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return Text(
+                                  'Loading',
+                                  style: kHeading6Normal,
+                                );
+                              }
+                              if (snapshot.data!.docs.isEmpty) {
+                                return Center(
+                                  child: Text(
+                                    'No Tasks',
+                                    style: kHeading6Normal,
+                                  ),
+                                );
+                              }
+                              if (snapshot.hasData) {
+                                return ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: snapshot.data!.docs.length,
+                                  itemBuilder: ((context, index) {
+                                    return TaskCard(
+                                      uid: auth.currentUser!.uid,
+                                      id: snapshot.data!.docs[index].id,
+                                      name: snapshot.data?.docs[index]['name'],
+                                      date: snapshot.data?.docs[index]['date'],
+                                      sTime: snapshot.data?.docs[index]['start_time'],
+                                      eTime: snapshot.data?.docs[index]['end_time'],
+                                      category: snapshot.data?.docs[index]['category'],
+                                      colorCategory: snapshot.data?.docs[index]['color_category'],
+                                      priority: snapshot.data?.docs[index]['priority'],
+                                      colorPriority: snapshot.data?.docs[index]['color_priority'],
+                                      reminder: snapshot.data?.docs[index]['reminder'],
+                                      notes: snapshot.data?.docs[index]['notes'],
+                                    );
+                                  }),
+                                );
+                              }
+
+                              return Container();
+                            }),
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(17, 16, 17, 0),
                           child: Row(
@@ -314,50 +369,124 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+// class TaskCard extends StatelessWidget {
+//   String uid;
+//   String id;
+//   String taskName;
+//   String startTime;
+//   String endTime;
+//   TaskCard({
+//     Key? key,
+//     required this.uid,
+//     required this.id,
+//     required this.taskName,
+//     required this.startTime,
+//     required this.endTime,
+//   }) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       margin: const EdgeInsets.symmetric(vertical: 5),
+//       width: MediaQuery.of(context).size.width - 30,
+//       height: 70,
+//       decoration: const BoxDecoration(
+//         color: kSoftGrey,
+//         borderRadius: BorderRadius.all(
+//           Radius.circular(10),
+//         ),
+//       ),
+//       child: Padding(
+//         padding: const EdgeInsets.all(10),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             AutoSizeText(
+//               taskName,
+//               style: kSubtitle.copyWith(color: kBlack),
+//             ),
+//             const SizedBox(
+//               height: 6,
+//             ),
+//             Expanded(
+//               child: Text(
+//                 "$startTime - $endTime",
+//                 style: kBodyText.copyWith(color: kBlack),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 class TaskCard extends StatelessWidget {
-  String taskName;
-  String startTime;
-  String endTime;
+  String uid;
+  String id;
+  String name;
+  String date;
+  String sTime;
+  String eTime;
+  String category;
+  String colorCategory;
+  String priority;
+  String colorPriority;
+  String reminder;
+  String notes;
+
   TaskCard({
-    Key? key,
-    required this.taskName,
-    required this.startTime,
-    required this.endTime,
-  }) : super(key: key);
+    super.key,
+    required this.uid,
+    required this.id,
+    required this.name,
+    required this.date,
+    required this.sTime,
+    required this.eTime,
+    required this.category,
+    required this.colorCategory,
+    required this.priority,
+    required this.colorPriority,
+    required this.reminder,
+    required this.notes,
+  });
 
   @override
   Widget build(BuildContext context) {
+    String valueString = colorCategory.split('(0x')[1].split(')')[0];
+    int value = int.parse(valueString, radix: 16);
+    Color otherColor = Color(value);
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5),
-      width: MediaQuery.of(context).size.width - 30,
-      height: 70,
+      margin: const EdgeInsets.symmetric(
+        horizontal: 12.0,
+        vertical: 4.0,
+      ),
       decoration: const BoxDecoration(
         color: kSoftGrey,
         borderRadius: BorderRadius.all(
           Radius.circular(10),
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AutoSizeText(
-              taskName,
-              style: kSubtitle.copyWith(color: kBlack),
-            ),
-            const SizedBox(
-              height: 6,
-            ),
-            Expanded(
-              child: Text(
-                "$startTime - $endTime",
-                style: kBodyText.copyWith(color: kBlack),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(vertical: 5),
+        title: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: kSubtitle.copyWith(color: kBlack),
               ),
-            ),
-          ],
+              const SizedBox(
+                height: 10,
+              ),
+              Text('$sTime - $eTime', style: kBodyText),
+            ],
+          ),
         ),
+        trailing: Padding(padding: const EdgeInsets.only(right: 10), child: Icon(Icons.circle, color: otherColor)),
       ),
     );
   }
