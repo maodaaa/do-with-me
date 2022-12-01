@@ -1,26 +1,31 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:do_with_me/core/styles/colors.dart';
+import 'package:do_with_me/core/styles/text_style.dart';
+import 'package:do_with_me/home_screen/home_screen.dart';
 import 'package:do_with_me/login_screen/signup_screen.dart';
-import 'package:do_with_me/style/colors.dart';
-import 'package:do_with_me/style/text_style.dart';
+import 'package:do_with_me/service/firebase_auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../widget/button.dart';
 
-class LoginScreen extends StatefulWidget {
-  static const routeName = '/login';
-  const LoginScreen({Key? key}) : super(key: key);
+class SignInScreen extends StatefulWidget {
+  static const routeName = '/signin';
+
+  const SignInScreen({Key? key}) : super(key: key);
 
   @override
-  LoginScreenState createState() => LoginScreenState();
+  State<SignInScreen> createState() => _SignInScreenState();
 }
 
-class LoginScreenState extends State<LoginScreen> {
+class _SignInScreenState extends State<SignInScreen> {
   TextEditingController? emailAddressController;
   TextEditingController? passwordController;
-
   late bool passwordVisibility;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -37,8 +42,30 @@ class LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  Future<void> _loginGoogle() async {
+    setState(() {
+      isLoading = true;
+    });
+    await FirebaseAuthService().signInWithGoogle();
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> _signInWithEmail(String email, String password) async {
+    setState(() {
+      isLoading = true;
+    });
+    await FirebaseAuthService().signInWithEmail(email, password);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    var users = FirebaseAuth.instance;
+    var firestore = FirebaseFirestore.instance;
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: Colors.white,
@@ -126,7 +153,7 @@ class LoginScreenState extends State<LoginScreen> {
                               decoration: InputDecoration(
                                 labelText: 'Password',
                                 labelStyle: kSubtitle.copyWith(color: kBlack),
-                                hintText: 'Enter your email here...',
+                                hintText: 'Enter your password here...',
                                 hintStyle: kBodyText,
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: const BorderSide(
@@ -205,8 +232,28 @@ class LoginScreenState extends State<LoginScreen> {
                       children: [
                         Expanded(
                           child: FFButtonWidget(
-                            onPressed: () {
-                              print('Button-Login pressed ...');
+                            onPressed: () async {
+                              try {
+                                await _signInWithEmail(
+                                  emailAddressController!.text,
+                                  passwordController!.text,
+                                );
+                              } on FirebaseAuthException catch (e) {
+                                showSnackbar(
+                                  context,
+                                  e.message.toString(),
+                                );
+                              }
+
+                              if (users.currentUser != null) {
+                                final uid = users.currentUser!.uid;
+                                final todoCollectionRef = firestore.collection("users").doc(uid);
+                                await todoCollectionRef.update({
+                                  "lastSignIn": FieldValue.serverTimestamp(),
+                                });
+
+                                Navigator.pushNamed(context, HomeScreen.routeName);
+                              }
                             },
                             text: 'Login',
                             options: FFButtonOptions(
@@ -244,8 +291,37 @@ class LoginScreenState extends State<LoginScreen> {
                       children: [
                         Expanded(
                           child: FFButtonWidget(
-                            onPressed: () {
-                              print('Button-Login pressed ...');
+                            onPressed: () async {
+                              try {
+                                await _loginGoogle();
+                              } on FirebaseAuthException catch (e) {
+                                showSnackbar(
+                                  context,
+                                  e.message.toString(),
+                                );
+                              }
+                              if (users.currentUser != null) {
+                                final userCollectionRef = firestore.collection("users");
+                                for (final providerProfile in users.currentUser!.providerData) {
+                                  final uid = users.currentUser!.uid;
+                                  final name = providerProfile.displayName;
+                                  final emailAddress = providerProfile.email;
+                                  final snapShot = await userCollectionRef.doc(uid).get();
+                                  if (snapShot.exists) {
+                                    await userCollectionRef.doc(uid).update({
+                                      "lastSignIn": FieldValue.serverTimestamp(),
+                                    });
+                                  } else {
+                                    await userCollectionRef.doc(uid).set({
+                                      "name": name,
+                                      "email": emailAddress,
+                                      "userCreated": FieldValue.serverTimestamp(),
+                                      "lastSignIn": FieldValue.serverTimestamp(),
+                                    });
+                                  }
+                                }
+                                Navigator.pushNamed(context, HomeScreen.routeName);
+                              }
                             },
                             text: 'Login with Google',
                             icon: Image.asset(
@@ -302,4 +378,15 @@ class LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+}
+
+void showSnackbar(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      backgroundColor: kPurple,
+      content: Text(
+        message.toString(),
+      ),
+    ),
+  );
 }

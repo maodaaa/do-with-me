@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:do_with_me/style/colors.dart';
-import 'package:do_with_me/style/text_style.dart';
+import 'package:do_with_me/core/styles/colors.dart';
+import 'package:do_with_me/core/styles/text_style.dart';
 import 'package:do_with_me/tasks/add_task_page.dart';
 import 'package:do_with_me/tasks/task_model.dart';
 import 'package:do_with_me/tasks/update_task_page.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,15 +24,17 @@ class _CalendarPageState extends State<CalendarPage> {
   DateTime firstDay = DateTime(1990);
   DateTime lastDay = DateTime(2050);
 
-  void _onDaySelected(DateTime day, DateTime focusedDay) =>
-      setState(() => today = day);
+  void _onDaySelected(DateTime day, DateTime focusedDay) => setState(() => today = day);
 
   String formatDate(DateTime date) => DateFormat("dd MMMM yyyy").format(date);
 
   @override
   Widget build(BuildContext context) {
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
     Query<Map<String, dynamic>> todos = FirebaseFirestore.instance
-        .collection('todos')
+        .collection('users')
+        .doc(uid)
+        .collection("todo")
         .where('date', isEqualTo: formatDate(today))
         .orderBy('start_time');
 
@@ -112,8 +114,7 @@ class _CalendarPageState extends State<CalendarPage> {
                               context,
                               AddNewTaskPage.routeName,
                             ),
-                            icon:
-                                const Icon(Icons.add, size: 24, color: kWhite),
+                            icon: const Icon(Icons.add, size: 24, color: kWhite),
                           ),
                         ],
                       ),
@@ -121,8 +122,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     StreamBuilder(
                       stream: todos.snapshots(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
@@ -133,18 +133,18 @@ class _CalendarPageState extends State<CalendarPage> {
                             itemBuilder: (context, index) {
                               final todo = snapshot.data?.docs[index];
                               Task task = Task(
-                                id: todo!.id,
-                                name: todo['name'],
-                                date: todo['date'],
-                                startTime: todo['start_time'],
-                                endTime: todo['end_time'],
-                                category: todo['category'],
-                                colorCategory: todo['color_category'],
-                                priority: todo['priority'],
-                                colorPriority: todo['color_priority'],
-                                reminder: todo['reminder'],
-                                notes: todo['notes'],
-                              );
+                                  id: todo!.id,
+                                  name: todo['name'],
+                                  date: todo['date'],
+                                  startTime: todo['start_time'],
+                                  endTime: todo['end_time'],
+                                  category: todo['category'],
+                                  colorCategory: todo['color_category'],
+                                  priority: todo['priority'],
+                                  colorPriority: todo['color_priority'],
+                                  reminder: todo['reminder'],
+                                  notes: todo['notes'],
+                                  finished: todo['finished']);
                               return TodoCard(task: task);
                             },
                           );
@@ -187,14 +187,12 @@ class TodoCard extends StatelessWidget {
         ],
       ),
       child: ListTile(
-        onTap: () => Navigator.pushNamed(context, UpdateTaskPage.routeName,
-            arguments: task),
+        onTap: () => Navigator.pushNamed(context, UpdateTaskPage.routeName, arguments: task),
         leading: IconButton(
           icon: const Icon(Icons.circle_outlined, color: kPurple, size: 30),
           onPressed: () {},
         ),
-        title:
-            Text(task.name, style: kSubtitle, overflow: TextOverflow.ellipsis),
+        title: Text(task.name, style: kSubtitle, overflow: TextOverflow.ellipsis),
         subtitle: Text(
           '${task.startTime} - ${task.endTime}',
           style: kBodyText,

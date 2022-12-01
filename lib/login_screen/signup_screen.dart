@@ -1,27 +1,31 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:do_with_me/login_screen/login_screen.dart';
-import 'package:do_with_me/style/colors.dart';
-import 'package:do_with_me/style/text_style.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:do_with_me/core/styles/colors.dart';
+import 'package:do_with_me/core/styles/text_style.dart';
+import 'package:do_with_me/home_screen/home_screen.dart';
+import 'package:do_with_me/login_screen/signin_screen.dart';
+import 'package:do_with_me/service/firebase_auth_service.dart';
+import 'package:do_with_me/widget/button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import '../widget/button.dart';
 
 class SignupScreen extends StatefulWidget {
   static const routeName = '/signup';
   const SignupScreen({Key? key}) : super(key: key);
 
   @override
-  SignupScreenState createState() => SignupScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class SignupScreenState extends State<SignupScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   TextEditingController? nameController;
   TextEditingController? emailAddressController;
   TextEditingController? passwordController;
 
   late bool passwordVisibility;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -38,6 +42,20 @@ class SignupScreenState extends State<SignupScreen> {
     emailAddressController?.dispose();
     passwordController?.dispose();
     super.dispose();
+  }
+
+  Future<void> _signUpInWitEmail(String name, String email, String password) async {
+    setState(() {
+      _isLoading = true;
+    });
+    await FirebaseAuthService().signUpInWitEmail(
+      name,
+      email,
+      password,
+    );
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -186,7 +204,7 @@ class SignupScreenState extends State<SignupScreen> {
                               decoration: InputDecoration(
                                 labelText: 'Password',
                                 labelStyle: kSubtitle.copyWith(color: kBlack),
-                                hintText: 'Enter your email here...',
+                                hintText: 'Enter your password here...',
                                 hintStyle: kBodyText,
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: const BorderSide(
@@ -244,8 +262,33 @@ class SignupScreenState extends State<SignupScreen> {
                       children: [
                         Expanded(
                           child: FFButtonWidget(
-                            onPressed: () {
-                              print('Button-Login pressed ...');
+                            onPressed: () async {
+                              try {
+                                await _signUpInWitEmail(
+                                  nameController!.text,
+                                  emailAddressController!.text,
+                                  passwordController!.text,
+                                );
+                              } on FirebaseAuthException catch (e) {
+                                showSnackbar(
+                                  context,
+                                  e.message.toString(),
+                                );
+                              }
+                              var users = FirebaseAuth.instance;
+                              var firestore = FirebaseFirestore.instance;
+                              if (users.currentUser != null) {
+                                final uid = users.currentUser!.uid;
+                                final todoCollectionRef = firestore.collection("users").doc(uid);
+                                await todoCollectionRef.set({
+                                  "name": users.currentUser!.displayName,
+                                  "email": users.currentUser!.email,
+                                  "userCreated": FieldValue.serverTimestamp(),
+                                  "lastSignIn": FieldValue.serverTimestamp(),
+                                });
+
+                                Navigator.pushNamed(context, HomeScreen.routeName);
+                              }
                             },
                             text: 'Create a new account ',
                             options: FFButtonOptions(
@@ -318,7 +361,7 @@ class SignupScreenState extends State<SignupScreen> {
                           ),
                           FFButtonWidget(
                             onPressed: () {
-                              Navigator.pushNamed(context, LoginScreen.routeName);
+                              Navigator.pushNamed(context, SignInScreen.routeName);
                             },
                             text: 'Log in',
                             options: FFButtonOptions(
@@ -342,4 +385,15 @@ class SignupScreenState extends State<SignupScreen> {
       ),
     );
   }
+}
+
+void showSnackbar(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      backgroundColor: kPurple,
+      content: Text(
+        message.toString(),
+      ),
+    ),
+  );
 }
