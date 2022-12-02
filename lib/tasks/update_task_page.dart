@@ -58,12 +58,14 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
     var colorCategory = "";
     var colorPriority = "";
 
-    if (categoryController.text == "Education") {
+    if (categoryController.text == "School") {
       colorCategory = kRedCategory.toString();
     } else if (categoryController.text == "Work") {
       colorCategory = kYellowCategory.toString();
-    } else if (categoryController.text == "Workout") {
+    } else if (categoryController.text == "Sport") {
       colorCategory = kGreenCategory.toString();
+    } else if (categoryController.text == "Meditation") {
+      colorCategory = kBrownCategory.toString();
     }
 
     if (priorityController.text == "High") {
@@ -103,7 +105,8 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
   }
 
   void deleteTask(String taskId) {
-    FirebaseFirestore.instance.collection("users").doc().collection("todo").doc(taskId).delete();
+    final uid = widget.task.uid;
+    FirebaseFirestore.instance.collection("users").doc(uid).collection("todo").doc(taskId).delete();
   }
 
   @override
@@ -382,14 +385,16 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                 child: DropdownButtonFormField<String>(
                   value: categoryController.text,
                   style: kBodyText,
-                  items: <String>["Education", "Work", "Workout"]
+                  items: <String>["School", "Work", "Sport", "Meditation"]
                       .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
                             value: value,
-                            child: Text(value == "Education"
-                                ? "Education"
+                            child: Text(value == "School"
+                                ? "School"
                                 : value == "Work"
                                     ? "Work"
-                                    : "Workout"),
+                                    : value == "Sport"
+                                      ? "Sport"
+                                      : "Meditation"),
                           ))
                       .toList(),
                   onChanged: (String? value) {
@@ -434,11 +439,13 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                     prefixIcon: Icon(
                       Icons.circle,
-                      color: categoryController.text == "Education"
+                      color: categoryController.text == "School"
                           ? kRedCategory
                           : categoryController.text == "Work"
                               ? kYellowCategory
-                              : kGreenCategory,
+                              : categoryController.text == "Sport"
+                                ? kGreenCategory
+                                : kBrownCategory,
                     ),
                   ),
                 ),

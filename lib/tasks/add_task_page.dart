@@ -24,6 +24,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
   TextEditingController priorityController = TextEditingController();
   TextEditingController reminderController = TextEditingController();
   TextEditingController notesController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -31,7 +32,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
     dateController.text = "";
     sTimeController.text = "";
     eTimeController.text = "";
-    categoryController.text = "Education";
+    categoryController.text = "School";
     priorityController.text = "High";
     reminderController.text = "5 minutes before";
     notesController.text = "";
@@ -56,12 +57,14 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
     var colorCategory = "";
     var colorPriority = "";
 
-    if (categoryController.text == "Education") {
+    if (categoryController.text == "School") {
       colorCategory = kRedCategory.toString();
     } else if (categoryController.text == "Work") {
       colorCategory = kYellowCategory.toString();
-    } else if (categoryController.text == "Workout") {
+    } else if (categoryController.text == "Sport") {
       colorCategory = kGreenCategory.toString();
+    } else if (categoryController.text == "Meditation") {
+      colorCategory = kBrownCategory.toString();
     }
 
     if (priorityController.text == "High") {
@@ -106,184 +109,141 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.only(top: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: TextFormField(
-                  controller: taskController,
-                  obscureText: false,
-                  style: kBodyText,
-                  decoration: InputDecoration(
-                    labelText: 'What\'s your task?',
-                    labelStyle: kSubtitle.copyWith(color: kBlack),
-                    hintStyle: kBodyText.copyWith(color: kBlack),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0xFFF1F4F8),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: kPurple,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0x00000000),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0x00000000),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsetsDirectional.all(16),
-                child: TextField(
-                  controller: dateController,
-                  obscureText: false,
-                  style: kBodyText,
-                  decoration: InputDecoration(
-                    labelText: 'Date',
-                    labelStyle: kSubtitle.copyWith(color: kBlack),
-                    hintStyle: kBodyText.copyWith(color: kBlack),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0xFFF1F4F8),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: kPurple,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0x00000000),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0x00000000),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
-                    suffixIcon: const Icon(Icons.calendar_month),
-                  ),
-                  readOnly: true,
-                  onTap: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                        context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime(2101));
-                    if (pickedDate != null) {
-                      String formattedDate = DateFormat('dd MMMM yyyy').format(pickedDate);
-                      setState(() {
-                        dateController.text = formattedDate;
-                      });
-                    }
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: Padding(
-                      padding: const EdgeInsets.only(right: 16),
-                      child: TextField(
-                        controller: sTimeController,
-                        obscureText: false,
-                        style: kBodyText,
-                        decoration: InputDecoration(
-                          labelText: 'Start Time',
-                          labelStyle: kSubtitle.copyWith(color: kBlack),
-                          hintStyle: kBodyText.copyWith(color: kBlack),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Color(0xFFF1F4F8),
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: kPurple,
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Color(0x00000000),
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Color(0x00000000),
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                          contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
-                          prefixIcon: const Icon(Icons.alarm),
+          child: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: TextFormField(
+                    controller: taskController,
+                    obscureText: false,
+                    style: kBodyText,
+                    decoration: InputDecoration(
+                      labelText: 'What\'s your task?',
+                      labelStyle: kSubtitle.copyWith(color: kBlack),
+                      hintStyle: kBodyText.copyWith(color: kBlack),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0xFFF1F4F8),
+                          width: 2,
                         ),
-                        readOnly: true,
-                        onTap: () async {
-                          TimeOfDay? pickedTime = await showTimePicker(
-                            initialTime: TimeOfDay.now(),
-                            context: context,
-                          );
-
-                          if (pickedTime != null) {
-                            DateTime parsedTime = DateFormat.jm().parse(pickedTime.format(context).toString());
-                            String formattedTime = DateFormat('HH:mm').format(parsedTime);
-                            setState(() {
-                              sTimeController.text = formattedTime; //set the value of text field.
-                            });
-                          }
-                        },
+                        borderRadius: BorderRadius.circular(15),
                       ),
-                    )),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 16),
-                        child: TextField(
-                          controller: eTimeController,
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: kPurple,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0x00000000),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0x00000000),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    ),
+                    validator: (value) {
+                      if(value == null || value.isEmpty) {
+                        return 'Please enter task name';
+                      }
+                      return null;
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    // onChanged: (value) => setState((() => taskController.text = value)),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.all(16),
+                  child: TextFormField(
+                    controller: dateController,
+                    obscureText: false,
+                    style: kBodyText,
+                    decoration: InputDecoration(
+                      labelText: 'Date',
+                      labelStyle: kSubtitle.copyWith(color: kBlack),
+                      hintStyle: kBodyText.copyWith(color: kBlack),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0xFFF1F4F8),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: kPurple,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0x00000000),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0x00000000),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                      suffixIcon: const Icon(Icons.calendar_month),
+                    ),
+                    validator: (value) {
+                      if(value == null || value.isEmpty) {
+                        return 'Please enter date';
+                      }
+                      return null;
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    onChanged: (value) => setState((() => dateController.text = value)),
+                    readOnly: true,
+                    onTap: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                          context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime(2101));
+                      if (pickedDate != null) {
+                        String formattedDate = DateFormat('dd MMMM yyyy').format(pickedDate);
+                        setState(() {
+                          dateController.text = formattedDate;
+                        });
+                      }
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: TextFormField(
+                          controller: sTimeController,
                           obscureText: false,
                           style: kBodyText,
                           decoration: InputDecoration(
-                            labelText: 'End Time',
+                            labelText: 'Start Time',
                             labelStyle: kSubtitle.copyWith(color: kBlack),
                             hintStyle: kBodyText.copyWith(color: kBlack),
                             enabledBorder: OutlineInputBorder(
@@ -319,6 +279,14 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                             contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                             prefixIcon: const Icon(Icons.alarm),
                           ),
+                          validator: (value) {
+                            if(value == null || value.isEmpty) {
+                              return 'Please enter start time';
+                            }
+                            return null;
+                          },
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          onChanged: (value) => setState((() => sTimeController.text = value)),
                           readOnly: true,
                           onTap: () async {
                             TimeOfDay? pickedTime = await showTimePicker(
@@ -330,281 +298,357 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                               DateTime parsedTime = DateFormat.jm().parse(pickedTime.format(context).toString());
                               String formattedTime = DateFormat('HH:mm').format(parsedTime);
                               setState(() {
-                                eTimeController.text = formattedTime; //set the value of text field.
+                                sTimeController.text = formattedTime; //set the value of text field.
                               });
                             }
                           },
                         ),
+                      )),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: TextFormField(
+                            controller: eTimeController,
+                            obscureText: false,
+                            style: kBodyText,
+                            decoration: InputDecoration(
+                              labelText: 'End Time',
+                              labelStyle: kSubtitle.copyWith(color: kBlack),
+                              hintStyle: kBodyText.copyWith(color: kBlack),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Color(0xFFF1F4F8),
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: kPurple,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Color(0x00000000),
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Color(0x00000000),
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                              prefixIcon: const Icon(Icons.alarm),
+                            ),
+                            validator: (value) {
+                              if(value == null || value.isEmpty) {
+                                return 'Please enter end time';
+                              }
+                              return null;
+                            },
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            onChanged: (value) => setState((() => eTimeController.text = value)),
+                            readOnly: true,
+                            onTap: () async {
+                              TimeOfDay? pickedTime = await showTimePicker(
+                                initialTime: TimeOfDay.now(),
+                                context: context,
+                              );
+
+                              if (pickedTime != null) {
+                                DateTime parsedTime = DateFormat.jm().parse(pickedTime.format(context).toString());
+                                String formattedTime = DateFormat('HH:mm').format(parsedTime);
+                                setState(() {
+                                  eTimeController.text = formattedTime; //set the value of text field.
+                                });
+                              }
+                            },
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: DropdownButtonFormField<String>(
-                  value: categoryController.text,
-                  style: kBodyText,
-                  items: <String>["Education", "Work", "Workout"]
-                      .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
-                            value: value,
-                            child: Text(value == "Education"
-                                ? "Education"
-                                : value == "Work"
-                                    ? "Work"
-                                    : "Workout"),
-                          ))
-                      .toList(),
-                  onChanged: (String? value) {
-                    setState(() {
-                      categoryController.text = value!;
-                    });
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Category',
-                    labelStyle: kSubtitle.copyWith(color: kBlack),
-                    hintStyle: kBodyText.copyWith(color: kBlack),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0xFFF1F4F8),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: kPurple,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0x00000000),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0x00000000),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
-                    prefixIcon: Icon(
-                      Icons.circle,
-                      color: categoryController.text == "Education"
-                          ? kRedCategory
-                          : categoryController.text == "Work"
-                              ? kYellowCategory
-                              : kGreenCategory,
-                    ),
+                    ],
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: DropdownButtonFormField<String>(
-                  value: priorityController.text,
-                  style: kBodyText,
-                  items: <String>["High", "Normal", "Low"]
-                      .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
-                            value: value,
-                            child: Text(value == "High"
-                                ? "High"
-                                : value == "Normal"
-                                    ? "Normal"
-                                    : "Low"),
-                          ))
-                      .toList(),
-                  onChanged: (String? value) {
-                    setState(() {
-                      priorityController.text = value!;
-                    });
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Priority',
-                    labelStyle: kSubtitle.copyWith(color: kBlack),
-                    hintStyle: kBodyText.copyWith(color: kBlack),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0xFFF1F4F8),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: kPurple,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0x00000000),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0x00000000),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
-                    prefixIcon: Icon(
-                      Icons.circle,
-                      color: priorityController.text == "High"
-                          ? kHighPriority
-                          : priorityController.text == "Normal"
-                              ? kNormalPriority
-                              : kLowPriority,
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: DropdownButtonFormField<String>(
-                  value: reminderController.text,
-                  style: kBodyText,
-                  items: <String>[
-                    "5 minutes before",
-                    "10 minutes before",
-                    "15 minutes before",
-                    "30 minutes before",
-                    "1 hour before",
-                  ]
-                      .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
-                            value: value,
-                            child: Text(value == "5 minutes before"
-                                ? "5 minutes before"
-                                : value == "10 minutes before"
-                                    ? "10 minutes before"
-                                    : value == "15 minutes before"
-                                        ? "15 minutes before"
-                                        : value == "30 minutes before"
-                                            ? "30 minutes before"
-                                            : "1 hour before"),
-                          ))
-                      .toList(),
-                  onChanged: (String? value) {
-                    setState(() {
-                      reminderController.text = value!;
-                    });
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Reminder',
-                    labelStyle: kSubtitle.copyWith(color: kBlack),
-                    hintStyle: kBodyText.copyWith(color: kBlack),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0xFFF1F4F8),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: kPurple,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0x00000000),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0x00000000),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: TextFormField(
-                  controller: notesController,
-                  obscureText: false,
-                  style: kBodyText,
-                  decoration: InputDecoration(
-                    labelText: 'Notes',
-                    labelStyle: kSubtitle.copyWith(color: kBlack),
-                    hintStyle: kBodyText.copyWith(color: kBlack),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0xFFF1F4F8),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: kPurple,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0x00000000),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color(0x00000000),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
-                  ),
-                  minLines: 5,
-                  maxLines: 5,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      addTask();
-                      Navigator.pop(context);
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: DropdownButtonFormField<String>(
+                    value: categoryController.text,
+                    style: kBodyText,
+                    items: <String>["School", "Work", "Sport", "Meditation"]
+                        .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
+                              value: value,
+                              child: Text(value == "School"
+                                  ? "School"
+                                  : value == "Work"
+                                      ? "Work"
+                                      : value == "Sport"
+                                        ? "Sport"
+                                        : "Meditation"),
+                            ))
+                        .toList(),
+                    onChanged: (String? value) {
+                      setState(() {
+                        categoryController.text = value!;
+                      });
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: kPurple,
-                      textStyle: kHeading6,
+                    decoration: InputDecoration(
+                      labelText: 'Category',
+                      labelStyle: kSubtitle.copyWith(color: kBlack),
+                      hintStyle: kBodyText.copyWith(color: kBlack),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0xFFF1F4F8),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: kPurple,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0x00000000),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0x00000000),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                      prefixIcon: Icon(
+                        Icons.circle,
+                        color: categoryController.text == "School"
+                            ? kRedCategory
+                            : categoryController.text == "Work"
+                                ? kYellowCategory
+                                : categoryController.text == "Sport"
+                                  ? kGreenCategory
+                                  : kBrownCategory,
+                      ),
                     ),
-                    child: const Text('Add Task'),
                   ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: DropdownButtonFormField<String>(
+                    value: priorityController.text,
+                    style: kBodyText,
+                    items: <String>["High", "Normal", "Low"]
+                        .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
+                              value: value,
+                              child: Text(value == "High"
+                                  ? "High"
+                                  : value == "Normal"
+                                      ? "Normal"
+                                      : "Low"),
+                            ))
+                        .toList(),
+                    onChanged: (String? value) {
+                      setState(() {
+                        priorityController.text = value!;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Priority',
+                      labelStyle: kSubtitle.copyWith(color: kBlack),
+                      hintStyle: kBodyText.copyWith(color: kBlack),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0xFFF1F4F8),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: kPurple,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0x00000000),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0x00000000),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                      prefixIcon: Icon(
+                        Icons.circle,
+                        color: priorityController.text == "High"
+                            ? kHighPriority
+                            : priorityController.text == "Normal"
+                                ? kNormalPriority
+                                : kLowPriority,
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: DropdownButtonFormField<String>(
+                    value: reminderController.text,
+                    style: kBodyText,
+                    items: <String>[
+                      "5 minutes before",
+                      "10 minutes before",
+                      "15 minutes before",
+                      "30 minutes before",
+                      "1 hour before",
+                    ]
+                        .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
+                              value: value,
+                              child: Text(value == "5 minutes before"
+                                  ? "5 minutes before"
+                                  : value == "10 minutes before"
+                                      ? "10 minutes before"
+                                      : value == "15 minutes before"
+                                          ? "15 minutes before"
+                                          : value == "30 minutes before"
+                                              ? "30 minutes before"
+                                              : "1 hour before"),
+                            ))
+                        .toList(),
+                    onChanged: (String? value) {
+                      setState(() {
+                        reminderController.text = value!;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Reminder',
+                      labelStyle: kSubtitle.copyWith(color: kBlack),
+                      hintStyle: kBodyText.copyWith(color: kBlack),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0xFFF1F4F8),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: kPurple,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0x00000000),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0x00000000),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: TextFormField(
+                    controller: notesController,
+                    obscureText: false,
+                    style: kBodyText,
+                    decoration: InputDecoration(
+                      labelText: 'Notes',
+                      labelStyle: kSubtitle.copyWith(color: kBlack),
+                      hintStyle: kBodyText.copyWith(color: kBlack),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0xFFF1F4F8),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: kPurple,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0x00000000),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0x00000000),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                    ),
+                    minLines: 5,
+                    maxLines: 5,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if(formKey.currentState!.validate()) {
+                          addTask();
+                          Navigator.pop(context);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: kPurple,
+                        textStyle: kHeading6,
+                      ),
+                      child: const Text('Add Task'),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
