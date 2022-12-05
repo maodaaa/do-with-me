@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/core/styles/text_style.dart';
+import 'package:do_with_me/notifications/notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -74,7 +75,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
     } else if (priorityController.text == "Low") {
       colorPriority = kLowPriority.toString();
     }
-    FirebaseFirestore.instance.collection("users").doc(uid).collection("todo").doc().set({
+    FirebaseFirestore.instance.collection("users").doc(uid).collection("todo").doc(taskName).set({
       "name": taskName,
       "date": dateController.text,
       "start_time": sTimeController.text,
@@ -87,6 +88,13 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
       "notes": notesController.text,
       "finished": false,
     });
+
+    createReminderNotification(
+      taskName, 
+      dateController.text, 
+      sTimeController.text, 
+      reminderController.text
+    );
   }
 
   @override

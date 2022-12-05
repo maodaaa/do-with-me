@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/core/styles/text_style.dart';
+import 'package:do_with_me/notifications/notifications.dart';
 import 'package:do_with_me/tasks/task_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -88,20 +89,15 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
       "notes": notesController.text,
       "finished": widget.task.finished,
     });
-    // FirebaseFirestore.instance.collection('todos').doc(taskName).delete();
 
-    // FirebaseFirestore.instance.collection("todos").doc(taskNameChanged).update({
-    //   "name": taskNameChanged,
-    //   "date": dateController.text,
-    //   "start_time": sTimeController.text,
-    //   "end_time": eTimeController.text,
-    //   "category": categoryController.text,
-    //   "color_category": colorCategory,
-    //   "priority": priorityController.text,
-    //   "color_priority": colorPriority,
-    //   "reminder": reminderController.text,
-    //   "notes": notesController.text,
-    // });
+    updateReminderNotification(
+      widget.task.date, 
+      widget.task.startTime, 
+      taskController.text, 
+      dateController.text, 
+      sTimeController.text, 
+      reminderController.text
+    );
   }
 
   void deleteTask(String taskId) {
