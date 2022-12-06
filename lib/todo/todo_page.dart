@@ -4,6 +4,7 @@ import 'package:do_with_me/core/styles/text_style.dart';
 import 'package:do_with_me/tasks/add_task_page.dart';
 import 'package:do_with_me/tasks/task_model.dart';
 import 'package:do_with_me/tasks/update_task_page.dart';
+import 'package:do_with_me/timer/timer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -334,7 +335,35 @@ class _TaskCardState extends State<TaskCard> {
                 Text('${widget.sTime} - ${widget.eTime}', style: kBodyText),
               ],
             ),
-            trailing: Padding(padding: const EdgeInsets.only(right: 10), child: Icon(Icons.circle, color: otherColor)),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 10), 
+                  child: IconButton(
+                    icon: const Icon(Icons.timer), 
+                    color: kBlack, 
+                    onPressed: () => Navigator.pushNamed(context, TimerPage.routeName,
+                      arguments: Task(
+                        uid: widget.uid,
+                        id: widget.id,
+                        name: widget.name,
+                        date: widget.date,
+                        startTime: widget.sTime,
+                        endTime: widget.eTime,
+                        category: widget.category,
+                        colorCategory: widget.colorCategory,
+                        priority: widget.priority,
+                        colorPriority: widget.colorPriority,
+                        reminder: widget.reminder,
+                        notes: widget.notes,
+                        finished: widget.finished,
+                      )),
+                  )
+                ),
+                Padding(padding: const EdgeInsets.only(right: 10), child: Icon(Icons.circle, color: otherColor)),
+              ],
+            )
           ),
         ),
       ),
