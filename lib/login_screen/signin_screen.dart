@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/core/styles/text_style.dart';
@@ -33,6 +34,44 @@ class _SignInScreenState extends State<SignInScreen> {
     emailAddressController = TextEditingController();
     passwordController = TextEditingController();
     passwordVisibility = false;
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if(!isAllowed) {
+        showDialog(
+          context: context, 
+          builder: (context) => AlertDialog(
+            title: const Text('Allow Notifications'),
+            content: const Text('Our app would like to send you notifications'),
+            actions: [
+              TextButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                }, 
+                child: const Text(
+                  'Don\'t Allow',
+                  style: TextStyle(
+                    color: kGrey,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => AwesomeNotifications()
+                  .requestPermissionToSendNotifications()
+                  .then((_) => Navigator.pop(context)), 
+                child: const Text(
+                  'Allow',
+                  style: TextStyle(
+                    color: kPurple,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          )
+        );
+      }
+    });
   }
 
   @override

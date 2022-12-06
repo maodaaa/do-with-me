@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/core/styles/text_style.dart';
+import 'package:do_with_me/notifications/notifications.dart';
 import 'package:do_with_me/tasks/task_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -58,12 +59,14 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
     var colorCategory = "";
     var colorPriority = "";
 
-    if (categoryController.text == "Education") {
+    if (categoryController.text == "School") {
       colorCategory = kRedCategory.toString();
     } else if (categoryController.text == "Work") {
       colorCategory = kYellowCategory.toString();
-    } else if (categoryController.text == "Workout") {
+    } else if (categoryController.text == "Sport") {
       colorCategory = kGreenCategory.toString();
+    } else if (categoryController.text == "Meditation") {
+      colorCategory = kBrownCategory.toString();
     }
 
     if (priorityController.text == "High") {
@@ -86,24 +89,20 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
       "notes": notesController.text,
       "finished": widget.task.finished,
     });
-    // FirebaseFirestore.instance.collection('todos').doc(taskName).delete();
 
-    // FirebaseFirestore.instance.collection("todos").doc(taskNameChanged).update({
-    //   "name": taskNameChanged,
-    //   "date": dateController.text,
-    //   "start_time": sTimeController.text,
-    //   "end_time": eTimeController.text,
-    //   "category": categoryController.text,
-    //   "color_category": colorCategory,
-    //   "priority": priorityController.text,
-    //   "color_priority": colorPriority,
-    //   "reminder": reminderController.text,
-    //   "notes": notesController.text,
-    // });
+    updateReminderNotification(
+      widget.task.date, 
+      widget.task.startTime, 
+      taskController.text, 
+      dateController.text, 
+      sTimeController.text, 
+      reminderController.text
+    );
   }
 
   void deleteTask(String taskId) {
-    FirebaseFirestore.instance.collection("users").doc().collection("todo").doc(taskId).delete();
+    final uid = widget.task.uid;
+    FirebaseFirestore.instance.collection("users").doc(uid).collection("todo").doc(taskId).delete();
   }
 
   @override
@@ -382,14 +381,16 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                 child: DropdownButtonFormField<String>(
                   value: categoryController.text,
                   style: kBodyText,
-                  items: <String>["Education", "Work", "Workout"]
+                  items: <String>["School", "Work", "Sport", "Meditation"]
                       .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem(
                             value: value,
-                            child: Text(value == "Education"
-                                ? "Education"
+                            child: Text(value == "School"
+                                ? "School"
                                 : value == "Work"
                                     ? "Work"
-                                    : "Workout"),
+                                    : value == "Sport"
+                                      ? "Sport"
+                                      : "Meditation"),
                           ))
                       .toList(),
                   onChanged: (String? value) {
@@ -434,11 +435,13 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                     prefixIcon: Icon(
                       Icons.circle,
-                      color: categoryController.text == "Education"
+                      color: categoryController.text == "School"
                           ? kRedCategory
                           : categoryController.text == "Work"
                               ? kYellowCategory
-                              : kGreenCategory,
+                              : categoryController.text == "Sport"
+                                ? kGreenCategory
+                                : kBrownCategory,
                     ),
                   ),
                 ),

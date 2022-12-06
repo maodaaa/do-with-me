@@ -1,3 +1,5 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/home_screen/home_screen.dart';
 import 'package:do_with_me/login_screen/signin_screen.dart';
 import 'package:do_with_me/login_screen/signup_screen.dart';
@@ -17,6 +19,20 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+  AwesomeNotifications().initialize(
+    'resource://drawable/res_app_icon',
+    [
+      NotificationChannel(
+          channelKey: 'basic_channel',
+          channelName: 'Basic Notifications',
+          channelDescription: 'Notification channel for basic tests',
+          defaultColor: kPurple,
+          importance: NotificationImportance.High,
+          channelShowBadge: true,
+        )
+    ],
+    debug: true
   );
   runApp(const MyApp());
 }
