@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/core/styles/text_style.dart';
+import 'package:do_with_me/login_screen/signin_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class ProfilPage extends StatefulWidget {
@@ -11,7 +15,9 @@ class ProfilPage extends StatefulWidget {
 }
 
 class _ProfilPageState extends State<ProfilPage> {
-  bool status = false;
+  bool status = true;
+  final CollectionReference userCollection =
+      FirebaseFirestore.instance.collection('users');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,9 +110,10 @@ class _ProfilPageState extends State<ProfilPage> {
               Container(
                 width: MediaQuery.of(context).size.width,
                 color: kGrey,
-                child: const ListTile(
-                  title: Text('Delete Account'),
-                  trailing: Icon(Icons.chevron_right),
+                child: ListTile(
+                  title: const Text('Delete Account'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {},
                 ),
               ),
               const Divider(height: 1, color: Color.fromRGBO(0, 0, 0, 0.300)),
@@ -116,7 +123,14 @@ class _ProfilPageState extends State<ProfilPage> {
                   backgroundColor: kPurple,
                   textStyle: kHeading6,
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut().then(
+                        (_) => Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (context) => const SignInScreen()),
+                            (route) => false),
+                      );
+                },
                 child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   child: Text('Logout'),
