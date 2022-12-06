@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/core/styles/text_style.dart';
+import 'package:do_with_me/core/utils/routes.dart';
 import 'package:do_with_me/tasks/add_task_page.dart';
 import 'package:do_with_me/tasks/task_model.dart';
 import 'package:do_with_me/tasks/update_task_page.dart';
@@ -73,6 +74,34 @@ class _CalendarPageState extends State<CalendarPage> {
                     }
                   });
                 },
+                calendarBuilders: CalendarBuilders(
+                  markerBuilder: (context, day, events) {
+                    final children = <Widget>[];
+                    if (events.isNotEmpty) {
+                      children.add(
+                        Positioned(
+                          right: 1,
+                          left: 1,
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              color: kGrey,
+                            ),
+                            width: 16,
+                            height: 16,
+                            child: Center(
+                              child: Text(
+                                events.length.toString(),
+                                style: kBodyText,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                ),
               ),
               const SizedBox(
                 height: 20,
