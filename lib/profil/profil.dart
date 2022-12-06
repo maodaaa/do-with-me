@@ -1,10 +1,15 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/core/styles/text_style.dart';
 import 'package:do_with_me/login_screen/signin_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
 
 class ProfilPage extends StatefulWidget {
   static const routeName = '/profil-page';
@@ -15,9 +20,26 @@ class ProfilPage extends StatefulWidget {
 }
 
 class _ProfilPageState extends State<ProfilPage> {
+  late String imagePath;
+  final User? user = FirebaseAuth.instance.currentUser;
   bool status = true;
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
+
+  Future<String> uploadImage(File imageFile) async {
+    String fileName = basename(imageFile.path);
+
+    Reference ref = FirebaseStorage.instance.ref().child(fileName);
+    UploadTask task = ref.putFile(imageFile);
+    TaskSnapshot snapshot = await task.whenComplete(() => null);
+
+    return snapshot.ref.getDownloadURL();
+  }
+
+  Future<PickedFile?> getImage() async {
+    return await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,15 +48,31 @@ class _ProfilPageState extends State<ProfilPage> {
           child: Column(
             children: [
               const SizedBox(height: 25),
-              Center(
-                child: CircleAvatar(
-                  radius: 100,
-                  backgroundColor: kBlack,
-                  child: Text(
-                    'No Image',
-                    style: kBodyText,
+              Stack(
+                children: [
+                  Center(
+                    child: CircleAvatar(
+                      radius: 100,
+                      backgroundColor: kBlack,
+                      child: Text(
+                        'No Image',
+                        style: kBodyText,
+                      ),
+                    ),
                   ),
-                ),
+                  Positioned(
+                    top: -1,
+                    bottom: 1,
+                    child: IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () async {
+                        PickedFile? file = await getImage();
+                        imagePath = await uploadImage(File(file!.path));
+                        setState(() {});
+                      },
+                    ),
+                  )
+                ],
               ),
               const SizedBox(height: 10),
               Text(
