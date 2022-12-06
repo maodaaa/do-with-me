@@ -6,6 +6,7 @@ import 'package:do_with_me/tasks/add_task_page.dart';
 import 'package:do_with_me/tasks/task_model.dart';
 import 'package:do_with_me/tasks/update_task_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,6 +22,7 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
+  final String uid = FirebaseAuth.instance.currentUser!.uid;
   DateTime today = DateTime.now();
   DateTime firstDay = DateTime(1990);
   DateTime lastDay = DateTime(2050);
@@ -32,7 +34,6 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-    final String uid = FirebaseAuth.instance.currentUser!.uid;
     Query<Map<String, dynamic>> todos = FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
@@ -165,6 +166,7 @@ class _CalendarPageState extends State<CalendarPage> {
                             itemBuilder: (context, index) {
                               final todo = snapshot.data?.docs[index];
                               Task task = Task(
+                                uid: uid,
                                 id: todo!.id,
                                 name: todo['name'],
                                 date: todo['date'],
@@ -197,13 +199,19 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 }
 
-class TodoCard extends StatelessWidget {
+class TodoCard extends StatefulWidget {
   final Task task;
 
   const TodoCard({required this.task, super.key});
 
   @override
+  State<TodoCard> createState() => _TodoCardState();
+}
+
+class _TodoCardState extends State<TodoCard> {
+  @override
   Widget build(BuildContext context) {
+    bool finished = widget.task.finished;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       width: MediaQuery.of(context).size.width - 30,
@@ -221,15 +229,25 @@ class TodoCard extends StatelessWidget {
       ),
       child: ListTile(
         onTap: () => Navigator.pushNamed(context, UpdateTaskPage.routeName,
-            arguments: task),
+            arguments: widget.task),
         leading: IconButton(
-          icon: const Icon(Icons.circle_outlined, color: kPurple, size: 30),
-          onPressed: () {},
+          icon: finished == true
+              ? const Icon(Icons.check_circle, color: kPurple, size: 30)
+              : const Icon(Icons.circle_outlined, color: kPurple, size: 30),
+          onPressed: () {
+            finished = !finished;
+            FirebaseFirestore.instance
+                .collection('users')
+                .doc(widget.task.uid)
+                .collection("todo")
+                .doc(widget.task.id)
+                .update({"finished": finished});
+          },
         ),
-        title:
-            Text(task.name, style: kSubtitle, overflow: TextOverflow.ellipsis),
+        title: Text(widget.task.name,
+            style: kSubtitle, overflow: TextOverflow.ellipsis),
         subtitle: Text(
-          '${task.startTime} - ${task.endTime}',
+          '${widget.task.startTime} - ${widget.task.endTime}',
           style: kBodyText,
           overflow: TextOverflow.ellipsis,
         ),
