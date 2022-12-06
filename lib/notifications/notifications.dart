@@ -20,10 +20,11 @@ Future<void> createReminderNotification(String task, String date, String time, S
   await AwesomeNotifications().createNotification(
     content: NotificationContent(
       id: createUniqueId(dateTime), 
-      channelKey: 'basic_channel',
+      channelKey: 'task_channel',
       title: task,
       body: 'You have $reminder task starts',
       notificationLayout: NotificationLayout.Default,
+      category: NotificationCategory.Reminder
     ),
     actionButtons: [
       NotificationActionButton(
@@ -62,10 +63,11 @@ Future<void> updateReminderNotification(
   await AwesomeNotifications().createNotification(
     content: NotificationContent(
       id: createUniqueId(dateTimeNew), 
-      channelKey: 'basic_channel',
+      channelKey: 'task_channel',
       title: taskNew,
       body: 'You have $reminder task starts',
       notificationLayout: NotificationLayout.Default,
+      category: NotificationCategory.Reminder
     ),
     actionButtons: [
       NotificationActionButton(
@@ -82,5 +84,18 @@ Future<void> updateReminderNotification(
       second: 0,
       millisecond: 0,
     )
+  );
+}
+
+Future<void> taskFinishedNotification(String name) async {
+  await AwesomeNotifications().createNotification(
+    content: NotificationContent(
+      id: -1, 
+      channelKey: 'timer_channel',
+      title: 'Task $name is Finished!',
+      body: 'Congratulations! You have finished your task.',
+      notificationLayout: NotificationLayout.Default,
+      category: NotificationCategory.Alarm
+    ),
   );
 }

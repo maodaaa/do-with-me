@@ -6,6 +6,7 @@ import 'package:do_with_me/login_screen/signup_screen.dart';
 import 'package:do_with_me/tasks/add_task_page.dart';
 import 'package:do_with_me/tasks/task_model.dart';
 import 'package:do_with_me/tasks/update_task_page.dart';
+import 'package:do_with_me/timer/timer.dart';
 import 'package:do_with_me/todo/todo_page.dart';
 import 'package:do_with_me/profil/profil.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -23,13 +24,21 @@ void main() async {
     'resource://drawable/res_app_icon',
     [
       NotificationChannel(
-          channelKey: 'basic_channel',
-          channelName: 'Basic Notifications',
-          channelDescription: 'Notification channel for basic tests',
-          defaultColor: kPurple,
-          importance: NotificationImportance.High,
-          channelShowBadge: true,
-        )
+        channelKey: 'task_channel',
+        channelName: 'Task Notifications',
+        channelDescription: 'Notification channel for tasks',
+        defaultColor: kPurple,
+        importance: NotificationImportance.High,
+        channelShowBadge: true,
+      ),
+      NotificationChannel(
+        channelKey: 'timer_channel',
+        channelName: 'Timer Notifications',
+        channelDescription: 'Notification channel for timer',
+        defaultColor: kPurple,
+        importance: NotificationImportance.Default,
+        channelShowBadge: true,
+      )
     ],
     debug: true
   );
@@ -58,9 +67,12 @@ class MyApp extends StatelessWidget {
         ToDoPage.routeName: (context) => const ToDoPage(),
         AddNewTaskPage.routeName: (context) => const AddNewTaskPage(),
         UpdateTaskPage.routeName: (context) => UpdateTaskPage(
-              task: ModalRoute.of(context)!.settings.arguments as Task,
-            ),
+          task: ModalRoute.of(context)!.settings.arguments as Task,
+        ),
         CalendarPage.routeName: (context) => const CalendarPage(),
+        TimerPage.routeName:(context) => TimerPage(
+          task: ModalRoute.of(context)!.settings.arguments as Task,
+        ),
         ProfilPage.routeName: (context) => const ProfilPage(),
       },
       home: const SignInScreen(),
