@@ -95,7 +95,6 @@ Future<void> taskFinishedNotification(String name) async {
       title: 'Task $name is Finished!',
       body: 'Congratulations! You have finished your task.',
       notificationLayout: NotificationLayout.Default,
-      category: NotificationCategory.Alarm
     ),
   );
 }
