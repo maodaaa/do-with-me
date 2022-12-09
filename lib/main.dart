@@ -10,6 +10,8 @@ import 'package:do_with_me/tasks/update_task_page.dart';
 import 'package:do_with_me/timer/timer.dart';
 import 'package:do_with_me/todo/todo_page.dart';
 import 'package:do_with_me/profil/profil.dart';
+import 'package:do_with_me/widget/navbar_home.dart';
+import 'package:do_with_me/widget/navbar_todo.dart';
 import 'package:do_with_me/widget/inital_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -66,8 +68,8 @@ class MyApp extends StatelessWidget {
         SignInScreen.routeName: (context) => const SignInScreen(),
         SignupScreen.routeName: (context) => const SignupScreen(),
         ResetPasswordScreen.routeName: (context) => const ResetPasswordScreen(),
-        HomeScreen.routeName: (context) => const HomeScreen(),
-        ToDoPage.routeName: (context) => const ToDoPage(),
+        HomeScreen.routeName: (context) => const NavBar(),
+        ToDoPage.routeName: (context) => const NavBarToDo(),
         AddNewTaskPage.routeName: (context) => const AddNewTaskPage(),
         UpdateTaskPage.routeName: (context) => UpdateTaskPage(
               task: ModalRoute.of(context)!.settings.arguments as Task,

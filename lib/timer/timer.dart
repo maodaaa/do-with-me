@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/notifications/notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../tasks/task_model.dart';
@@ -26,16 +27,21 @@ class _TimerPageState extends State<TimerPage> {
   @override
   void initState() {
     super.initState();
-    int hourStart = DateFormat('HH:mm').parse(widget.task.startTime).toLocal().hour;
-    int minuteStart = DateFormat('HH:mm').parse(widget.task.startTime).toLocal().minute;
+    int hourStart =
+        DateFormat('HH:mm').parse(widget.task.startTime).toLocal().hour;
+    int minuteStart =
+        DateFormat('HH:mm').parse(widget.task.startTime).toLocal().minute;
     int hourEnd = DateFormat('HH:mm').parse(widget.task.endTime).toLocal().hour;
-    int minuteEnd = DateFormat('HH:mm').parse(widget.task.endTime).toLocal().minute;
-    myDuration = Duration(hours: hourEnd-hourStart, minutes: minuteEnd-minuteStart);
+    int minuteEnd =
+        DateFormat('HH:mm').parse(widget.task.endTime).toLocal().minute;
+    myDuration =
+        Duration(hours: hourEnd - hourStart, minutes: minuteEnd - minuteStart);
     startTimer();
   }
 
   void startTimer() {
-    countdownTimer = Timer.periodic(const Duration(seconds: 1), (_) => setCountdown());
+    countdownTimer =
+        Timer.periodic(const Duration(seconds: 1), (_) => setCountdown());
   }
 
   void pauseTimer() {
@@ -44,11 +50,15 @@ class _TimerPageState extends State<TimerPage> {
 
   void stopTimer() {
     pauseTimer();
-    int hourStart = DateFormat('HH:mm').parse(widget.task.startTime).toLocal().hour;
-    int minuteStart = DateFormat('HH:mm').parse(widget.task.startTime).toLocal().minute;
+    int hourStart =
+        DateFormat('HH:mm').parse(widget.task.startTime).toLocal().hour;
+    int minuteStart =
+        DateFormat('HH:mm').parse(widget.task.startTime).toLocal().minute;
     int hourEnd = DateFormat('HH:mm').parse(widget.task.endTime).toLocal().hour;
-    int minuteEnd = DateFormat('HH:mm').parse(widget.task.endTime).toLocal().minute;
-    myDuration = Duration(hours: hourEnd-hourStart, minutes: minuteEnd-minuteStart);
+    int minuteEnd =
+        DateFormat('HH:mm').parse(widget.task.endTime).toLocal().minute;
+    myDuration =
+        Duration(hours: hourEnd - hourStart, minutes: minuteEnd - minuteStart);
     setState(() => myDuration);
   }
 
@@ -59,7 +69,12 @@ class _TimerPageState extends State<TimerPage> {
       if (seconds < 0) {
         countdownTimer!.cancel();
         taskFinishedNotification(widget.task.name);
-        FirebaseFirestore.instance.collection("users").doc(widget.task.uid).collection("todo").doc(widget.task.id).update({
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc(widget.task.uid)
+            .collection("todo")
+            .doc(widget.task.id)
+            .update({
           "finished": true,
         });
         Navigator.pop(context);
@@ -104,38 +119,26 @@ class _TimerPageState extends State<TimerPage> {
             children: [
               Text(
                 widget.task.name,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontSize: 50
-                ),
+                style: GoogleFonts.inter(
+                    fontSize: 50, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 30),
-              const Text(
+              Text(
                 'You have',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 40
-                ),
+                style: GoogleFonts.inter(fontSize: 40),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               Text(
                 '$hours:$minutes:$seconds',
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 50
-                ),
+                style: GoogleFonts.inter(fontSize: 50),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
-              const Text(
+              Text(
                 'before task is finished',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 40
-                ),
+                style: GoogleFonts.inter(fontSize: 40),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 50),
@@ -146,7 +149,8 @@ class _TimerPageState extends State<TimerPage> {
                     onPressed: startTimer,
                     style: ButtonStyle(
                       elevation: MaterialStateProperty.all(15),
-                      padding: MaterialStateProperty.all(const EdgeInsets.all(16)),
+                      padding:
+                          MaterialStateProperty.all(const EdgeInsets.all(16)),
                       backgroundColor: MaterialStateProperty.all(kPurple),
                       shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
@@ -154,11 +158,9 @@ class _TimerPageState extends State<TimerPage> {
                         ),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       'Start/Resume',
-                      style: TextStyle(
-                        fontSize: 24,
-                      ),
+                      style: GoogleFonts.inter(fontSize: 24),
                     ),
                   ),
                   ElevatedButton(
@@ -169,7 +171,8 @@ class _TimerPageState extends State<TimerPage> {
                     },
                     style: ButtonStyle(
                       elevation: MaterialStateProperty.all(15),
-                      padding: MaterialStateProperty.all(const EdgeInsets.all(16)),
+                      padding:
+                          MaterialStateProperty.all(const EdgeInsets.all(16)),
                       backgroundColor: MaterialStateProperty.all(kPurple),
                       shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
@@ -177,11 +180,9 @@ class _TimerPageState extends State<TimerPage> {
                         ),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       'Stop/Pause',
-                      style: TextStyle(
-                        fontSize: 24,
-                      ),
+                      style: GoogleFonts.inter(fontSize: 24),
                     ),
                   ),
                 ],
@@ -189,7 +190,7 @@ class _TimerPageState extends State<TimerPage> {
             ],
           ),
         ),
-      ), 
+      ),
     );
   }
 }
