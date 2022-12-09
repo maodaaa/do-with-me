@@ -23,27 +23,26 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   AwesomeNotifications().initialize(
-    'resource://drawable/res_app_icon',
-    [
-      NotificationChannel(
-        channelKey: 'task_channel',
-        channelName: 'Task Notifications',
-        channelDescription: 'Notification channel for tasks',
-        defaultColor: kPurple,
-        importance: NotificationImportance.High,
-        channelShowBadge: true,
-      ),
-      NotificationChannel(
-        channelKey: 'timer_channel',
-        channelName: 'Timer Notifications',
-        channelDescription: 'Notification channel for timer',
-        defaultColor: kPurple,
-        importance: NotificationImportance.Default,
-        channelShowBadge: true,
-      )
-    ],
-    debug: true
-  );
+      'resource://drawable/res_app_icon',
+      [
+        NotificationChannel(
+          channelKey: 'task_channel',
+          channelName: 'Task Notifications',
+          channelDescription: 'Notification channel for tasks',
+          defaultColor: kPurple,
+          importance: NotificationImportance.High,
+          channelShowBadge: true,
+        ),
+        NotificationChannel(
+          channelKey: 'timer_channel',
+          channelName: 'Timer Notifications',
+          channelDescription: 'Notification channel for timer',
+          defaultColor: kPurple,
+          importance: NotificationImportance.Default,
+          channelShowBadge: true,
+        )
+      ],
+      debug: true);
   runApp(const MyApp());
 }
 
@@ -69,12 +68,12 @@ class MyApp extends StatelessWidget {
         ToDoPage.routeName: (context) => const NavBarToDo(),
         AddNewTaskPage.routeName: (context) => const AddNewTaskPage(),
         UpdateTaskPage.routeName: (context) => UpdateTaskPage(
-          task: ModalRoute.of(context)!.settings.arguments as Task,
-        ),
+              task: ModalRoute.of(context)!.settings.arguments as Task,
+            ),
         CalendarPage.routeName: (context) => const CalendarPage(),
-        TimerPage.routeName:(context) => TimerPage(
-          task: ModalRoute.of(context)!.settings.arguments as Task,
-        ),
+        TimerPage.routeName: (context) => TimerPage(
+              task: ModalRoute.of(context)!.settings.arguments as Task,
+            ),
         ProfilPage.routeName: (context) => const ProfilPage(),
       },
       home: const SignInScreen(),
