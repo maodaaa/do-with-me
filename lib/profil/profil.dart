@@ -106,73 +106,62 @@ class _ProfilPageState extends State<ProfilPage> {
           child: Column(
             children: [
               const SizedBox(height: 25),
-              StreamBuilder(
-                stream:
-                    FirebaseFirestore.instance.collection('users').snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    name = snapshot.data?.docs[2]['name'];
-                    imagePath = snapshot.data?.docs[2]['image_path'];
-                  }
-                  return Stack(
-                    children: [
-                      Center(
-                        child: imagePath.isNotEmpty
-                            ? Container(
-                                width: 200,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: kBlack),
-                                  image: DecorationImage(
-                                    image: NetworkImage(imagePath),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              )
-                            : Container(
-                                width: 200,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  color:
-                                      const Color.fromARGB(255, 210, 210, 210),
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: kBlack),
-                                ),
-                                child: Center(
-                                  child: Text('No Image', style: kBodyText),
-                                ),
+              Stack(
+                children: [
+                  Center(
+                    child: imagePath.isNotEmpty
+                        ? Container(
+                            width: 200,
+                            height: 200,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: kBlack),
+                              image: DecorationImage(
+                                image: NetworkImage(imagePath),
+                                fit: BoxFit.cover,
                               ),
+                            ),
+                          )
+                        : Container(
+                            width: 200,
+                            height: 200,
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 210, 210, 210),
+                              shape: BoxShape.circle,
+                              border: Border.all(color: kBlack),
+                            ),
+                            child: Center(
+                              child: Text('No Image', style: kBodyText),
+                            ),
+                          ),
+                  ),
+                  Positioned(
+                    top: 150,
+                    right: 100,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: kPurple,
+                        borderRadius: BorderRadius.all(Radius.circular(50)),
                       ),
-                      Positioned(
-                        top: 150,
-                        right: 100,
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            color: kPurple,
-                            borderRadius: BorderRadius.all(Radius.circular(50)),
-                          ),
-                          child: IconButton(
-                            color: kWhite,
-                            icon: const Icon(Icons.edit),
-                            onPressed: () async {
-                              PickedFile? file = await getImage();
-                              imagePath = await uploadImage(File(file!.path));
+                      child: IconButton(
+                        color: kWhite,
+                        icon: const Icon(Icons.edit),
+                        onPressed: () async {
+                          PickedFile? file = await getImage();
+                          imagePath = await uploadImage(File(file!.path));
 
-                              if (imagePath.isNotEmpty) {
-                                FirebaseFirestore.instance
-                                    .collection('users')
-                                    .doc(uid)
-                                    .update({'image_path': imagePath});
-                              }
-                              setState(() {});
-                            },
-                          ),
-                        ),
-                      )
-                    ],
-                  );
-                },
+                          if (imagePath.isNotEmpty) {
+                            FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(uid)
+                                .update({'image_path': imagePath});
+                          }
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                  )
+                ],
               ),
               const SizedBox(height: 10),
               Text(
