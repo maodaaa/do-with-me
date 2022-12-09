@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/notifications/notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../tasks/task_model.dart';
@@ -104,38 +105,25 @@ class _TimerPageState extends State<TimerPage> {
             children: [
               Text(
                 widget.task.name,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontSize: 50
-                ),
+                style: GoogleFonts.inter(fontSize: 50, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 30),
-              const Text(
+              Text(
                 'You have',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 40
-                ),
+                style: GoogleFonts.inter(fontSize: 40),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               Text(
                 '$hours:$minutes:$seconds',
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 50
-                ),
+                style: GoogleFonts.inter(fontSize: 50),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
-              const Text(
+              Text(
                 'before task is finished',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 40
-                ),
+                style: GoogleFonts.inter(fontSize: 40),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 50),
@@ -154,11 +142,9 @@ class _TimerPageState extends State<TimerPage> {
                         ),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       'Start/Resume',
-                      style: TextStyle(
-                        fontSize: 24,
-                      ),
+                      style: GoogleFonts.inter(fontSize: 24),
                     ),
                   ),
                   ElevatedButton(
@@ -177,11 +163,9 @@ class _TimerPageState extends State<TimerPage> {
                         ),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       'Stop/Pause',
-                      style: TextStyle(
-                        fontSize: 24,
-                      ),
+                      style: GoogleFonts.inter(fontSize: 24),
                     ),
                   ),
                 ],

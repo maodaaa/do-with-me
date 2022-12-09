@@ -6,6 +6,7 @@ import 'package:do_with_me/core/styles/text_style.dart';
 import 'package:do_with_me/home_screen/home_screen.dart';
 import 'package:do_with_me/login_screen/signup_screen.dart';
 import 'package:do_with_me/service/firebase_auth_service.dart';
+import 'package:do_with_me/widget/navbar_home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
