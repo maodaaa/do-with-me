@@ -49,7 +49,7 @@ class FirebaseAuthService {
         await _auth.currentUser?.updateDisplayName(name);
       }
     } on FirebaseAuthException catch (e) {
-      print(e.stackTrace.toString());
+      e.stackTrace.toString();
     }
   }
 
