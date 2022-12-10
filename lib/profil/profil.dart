@@ -21,9 +21,6 @@ class ProfilPage extends StatefulWidget {
 class _ProfilPageState extends State<ProfilPage> {
   String imagePath = '';
   String name = '';
-  int totalTask = 0;
-  int finishedTask = 0;
-  int ongoingTask = 0;
   bool status = true;
 
   final String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -52,33 +49,6 @@ class _ProfilPageState extends State<ProfilPage> {
     return value.docs.isNotEmpty;
   }
 
-  void getTodo() {
-    isCollectionExist('todo').then(
-      (value) => StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('users')
-            .doc(uid)
-            .collection('todo')
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            setState(() {
-              totalTask = snapshot.data!.docs.length;
-              finishedTask = snapshot.data!.docs
-                  .where((e) => e['finished'] == true)
-                  .length;
-              ongoingTask = snapshot.data!.docs
-                  .where((e) => e['finished'] == false)
-                  .length;
-            });
-          }
-
-          return const SizedBox();
-        },
-      ),
-    );
-  }
-
   Future getUserData() async {
     FirebaseFirestore.instance
         .collection('users')
@@ -93,12 +63,15 @@ class _ProfilPageState extends State<ProfilPage> {
   void initState() {
     super.initState();
     getUserData();
-    getTodo();
   }
 
   @override
   Widget build(BuildContext context) {
     final auth = FirebaseAuth.instance;
+    Query<Map<String, dynamic>> todos = FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection("todo");
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -169,47 +142,65 @@ class _ProfilPageState extends State<ProfilPage> {
                 style: kHeading5,
               ),
               const SizedBox(height: 25),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Column(
-                    children: [
-                      Text(
-                        totalTask.toString(),
-                        style: kHeading6,
-                      ),
-                      Text(
-                        "Total Task",
-                        style: kBodyText,
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      Text(
-                        finishedTask.toString(),
-                        style: kHeading6,
-                      ),
-                      Text(
-                        "Complete",
-                        style: kBodyText,
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      Text(
-                        ongoingTask.toString(),
-                        style: kHeading6,
-                      ),
-                      Text(
-                        "Ongoing",
-                        style: kBodyText,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              StreamBuilder(
+                  stream: todos.snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                          child: CircularProgressIndicator(color: kPurple));
+                    }
+                    final todo = snapshot.data!.docs;
+                    final total = todo.length.toString();
+                    final complete = todo
+                        .where((e) => e['finished'] == true)
+                        .length
+                        .toString();
+                    final ongoing = todo
+                        .where((e) => e['finished'] == false)
+                        .length
+                        .toString();
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Column(
+                          children: [
+                            Text(
+                              total.isNotEmpty ? total : '0',
+                              style: kHeading6,
+                            ),
+                            Text(
+                              "Total Task",
+                              style: kBodyText,
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text(
+                              complete.isNotEmpty ? complete : '0',
+                              style: kHeading6,
+                            ),
+                            Text(
+                              "Complete",
+                              style: kBodyText,
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text(
+                              ongoing.isNotEmpty ? ongoing : '0',
+                              style: kHeading6,
+                            ),
+                            Text(
+                              "Ongoing",
+                              style: kBodyText,
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  }),
               const SizedBox(height: 25),
               const Divider(height: 1, color: Color.fromRGBO(0, 0, 0, 0.300)),
               Container(
