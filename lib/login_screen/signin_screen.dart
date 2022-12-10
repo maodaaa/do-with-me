@@ -111,7 +111,7 @@ class _SignInScreenState extends State<SignInScreen> {
         }
       }
       if (!mounted) return;
-      Navigator.popAndPushNamed(context, HomeScreen.routeName);
+      Navigator.pushReplacementNamed(context, HomeScreen.routeName);
     }
 
     setState(() {

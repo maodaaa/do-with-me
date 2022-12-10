@@ -44,7 +44,7 @@ class _ProfilPageState extends State<ProfilPage> {
   }
 
   Future getUserData() async {
-    FirebaseFirestore.instance.collection('users').doc(uid).snapshots().listen((userData) => setState(() {
+    FirebaseFirestore.instance.collection('users').doc(uid).snapshots().listen((userData) => (() {
           imagePath = userData.data()!['image_path'];
         }));
   }
@@ -113,7 +113,6 @@ class _ProfilPageState extends State<ProfilPage> {
                           if (imagePath.isNotEmpty) {
                             FirebaseFirestore.instance.collection('users').doc(uid).update({'image_path': imagePath});
                           }
-                          setState(() {});
                         },
                       ),
                     ),
@@ -226,11 +225,11 @@ class _ProfilPageState extends State<ProfilPage> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: kPurple,
                             ),
-                            onPressed: () {
-                              FirebaseFirestore.instance.collection('users').doc(uid).delete().then((_) {
-                                User? user = FirebaseAuth.instance.currentUser;
-                                user!.delete().then((_) => Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(builder: (context) => const SignInScreen()), (route) => false));
+                            onPressed: () async {
+                              await FirebaseFirestore.instance.collection('users').doc(uid).delete().then((_) {
+                                FirebaseAuth.instance.currentUser?.delete().then((_) => Navigator.of(context)
+                                    .pushAndRemoveUntil(
+                                        MaterialPageRoute(builder: (context) => const SignInScreen()), (route) => false));
                               });
                             },
                             child: const Text('Confirm'),

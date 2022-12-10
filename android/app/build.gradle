@@ -35,6 +35,11 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    packagingOptions {
+    doNotStrip "*/armeabi-v7a/libflutter.so"
+    doNotStrip "*/x86/libflutter.so"
+    }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -69,6 +74,8 @@ flutter {
 }
 
 dependencies {
+    compileOnly 'org.jetbrains:annotations:13.0'
+    compileOnly 'org.checkerframework:checker-compat-qual:2.5.5'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation platform('com.google.firebase:firebase-bom:31.0.3')
     implementation 'com.google.firebase:firebase-analytics'
