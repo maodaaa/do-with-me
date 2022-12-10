@@ -1,6 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/home_screen/home_screen.dart';
+import 'package:do_with_me/login_screen/reset_password_screen.dart';
 import 'package:do_with_me/login_screen/signin_screen.dart';
 import 'package:do_with_me/login_screen/signup_screen.dart';
 import 'package:do_with_me/tasks/add_task_page.dart';
@@ -11,6 +12,7 @@ import 'package:do_with_me/todo/todo_page.dart';
 import 'package:do_with_me/profil/profil.dart';
 import 'package:do_with_me/widget/navbar_home.dart';
 import 'package:do_with_me/widget/navbar_todo.dart';
+import 'package:do_with_me/widget/inital_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -60,10 +62,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      initialRoute: SignInScreen.routeName,
+      initialRoute: InitialPage.routeName,
       routes: {
+        InitialPage.routeName: (context) => const InitialPage(),
         SignInScreen.routeName: (context) => const SignInScreen(),
         SignupScreen.routeName: (context) => const SignupScreen(),
+        ResetPasswordScreen.routeName: (context) => const ResetPasswordScreen(),
         HomeScreen.routeName: (context) => const NavBar(),
         ToDoPage.routeName: (context) => const NavBarToDo(),
         AddNewTaskPage.routeName: (context) => const AddNewTaskPage(),
@@ -76,7 +80,7 @@ class MyApp extends StatelessWidget {
             ),
         ProfilPage.routeName: (context) => const ProfilPage(),
       },
-      home: const SignInScreen(),
+      home: const InitialPage(),
     );
   }
 }
