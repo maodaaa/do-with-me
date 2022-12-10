@@ -43,16 +43,10 @@ class _ProfilPageState extends State<ProfilPage> {
     return value.docs.isNotEmpty;
   }
 
-
   Future getUserData() async {
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .snapshots()
-        .listen((userData) => setState(() {
-              imagePath = userData.data()!['image_path'];
-            }));
-
+    FirebaseFirestore.instance.collection('users').doc(uid).snapshots().listen((userData) => setState(() {
+          imagePath = userData.data()!['image_path'];
+        }));
   }
 
   @override
@@ -64,10 +58,7 @@ class _ProfilPageState extends State<ProfilPage> {
   @override
   Widget build(BuildContext context) {
     final auth = FirebaseAuth.instance;
-    Query<Map<String, dynamic>> todos = FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .collection("todo");
+    Query<Map<String, dynamic>> todos = FirebaseFirestore.instance.collection('users').doc(uid).collection("todo");
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -139,19 +130,12 @@ class _ProfilPageState extends State<ProfilPage> {
                   stream: todos.snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                          child: CircularProgressIndicator(color: kPurple));
+                      return const Center(child: CircularProgressIndicator(color: kPurple));
                     }
                     final todo = snapshot.data!.docs;
                     final total = todo.length.toString();
-                    final complete = todo
-                        .where((e) => e['finished'] == true)
-                        .length
-                        .toString();
-                    final ongoing = todo
-                        .where((e) => e['finished'] == false)
-                        .length
-                        .toString();
+                    final complete = todo.where((e) => e['finished'] == true).length.toString();
+                    final ongoing = todo.where((e) => e['finished'] == false).length.toString();
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -243,18 +227,10 @@ class _ProfilPageState extends State<ProfilPage> {
                               backgroundColor: kPurple,
                             ),
                             onPressed: () {
-                              FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(uid)
-                                  .delete()
-                                  .then((_) {
+                              FirebaseFirestore.instance.collection('users').doc(uid).delete().then((_) {
                                 User? user = FirebaseAuth.instance.currentUser;
-                                user!.delete().then((_) => Navigator.of(context)
-                                    .pushAndRemoveUntil(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const SignInScreen()),
-                                        (route) => false));
+                                user!.delete().then((_) => Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(builder: (context) => const SignInScreen()), (route) => false));
                               });
                             },
                             child: const Text('Confirm'),
