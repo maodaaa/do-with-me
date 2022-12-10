@@ -5,10 +5,8 @@ import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/core/styles/text_style.dart';
 import 'package:do_with_me/login_screen/signin_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 
@@ -55,51 +53,53 @@ class _ProfilPageState extends State<ProfilPage> {
   }
 
   void getTodo() {
-    StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .collection('todo')
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          totalTask = snapshot.data!.docs.length;
-          finishedTask =
-              snapshot.data!.docs.where((e) => e['finised'] == true).length;
-          ongoingTask =
-              snapshot.data!.docs.where((e) => e['finised'] == false).length;
-        }
+    isCollectionExist('todo').then(
+      (value) => StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('users')
+            .doc(uid)
+            .collection('todo')
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            setState(() {
+              totalTask = snapshot.data!.docs.length;
+              finishedTask = snapshot.data!.docs
+                  .where((e) => e['finished'] == true)
+                  .length;
+              ongoingTask = snapshot.data!.docs
+                  .where((e) => e['finished'] == false)
+                  .length;
+            });
+          }
 
-        return const SizedBox();
-      },
+          return const SizedBox();
+        },
+      ),
     );
   }
 
-  void getUserData() async {
-    StreamBuilder(
-      stream:
-          FirebaseFirestore.instance.collection('users').doc(uid).snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final doc = snapshot.data;
-          name = doc!['name'];
-          imagePath = doc['image_path'];
-        }
-        return const SizedBox();
-      },
-    );
+  Future getUserData() async {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .snapshots()
+        .listen((userData) => setState(() {
+              imagePath = userData.data()!['image_path'];
+            }));
   }
 
   @override
-  void setState(VoidCallback fn) {
-    // TODO: implement setState
-    super.setState(fn);
-    getTodo();
+  void initState() {
+    super.initState();
     getUserData();
+    getTodo();
   }
 
   @override
   Widget build(BuildContext context) {
+    final auth = FirebaseAuth.instance;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
@@ -165,7 +165,7 @@ class _ProfilPageState extends State<ProfilPage> {
               ),
               const SizedBox(height: 10),
               Text(
-                name.isEmpty ? 'John Doe' : name,
+                auth.currentUser!.displayName ?? 'John Doe',
                 style: kHeading5,
               ),
               const SizedBox(height: 25),
@@ -259,9 +259,20 @@ class _ProfilPageState extends State<ProfilPage> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: kPurple,
                             ),
-                            onPressed: () async {
-                              final user = FirebaseAuth.instance.currentUser;
-                              user!.delete();
+                            onPressed: () {
+                              FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(uid)
+                                  .delete()
+                                  .then((_) {
+                                User? user = FirebaseAuth.instance.currentUser;
+                                user!.delete().then((_) => Navigator.of(context)
+                                    .pushAndRemoveUntil(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const SignInScreen()),
+                                        (route) => false));
+                              });
                             },
                             child: const Text('Confirm'),
                           ),
