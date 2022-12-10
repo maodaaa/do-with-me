@@ -1,5 +1,5 @@
-import 'package:do_with_me/home_screen/home_screen.dart';
 import 'package:do_with_me/login_screen/signin_screen.dart';
+import 'package:do_with_me/widget/navbar_home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +17,7 @@ class InitialPage extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             } else if (snapshot.hasData) {
-              return const HomeScreen();
+              return const NavBar();
             } else {
               return const SignInScreen();
             }
