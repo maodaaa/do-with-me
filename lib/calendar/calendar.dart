@@ -1,14 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/core/styles/text_style.dart';
-import 'package:do_with_me/core/utils/routes.dart';
 import 'package:do_with_me/tasks/add_task_page.dart';
 import 'package:do_with_me/tasks/task_model.dart';
 import 'package:do_with_me/tasks/update_task_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
@@ -27,8 +24,7 @@ class _CalendarPageState extends State<CalendarPage> {
   DateTime firstDay = DateTime(1990);
   DateTime lastDay = DateTime(2050);
 
-  void _onDaySelected(DateTime day, DateTime focusedDay) =>
-      setState(() => today = day);
+  void _onDaySelected(DateTime day, DateTime focusedDay) => setState(() => today = day);
 
   String formatDate(DateTime date) => DateFormat("dd MMMM yyyy").format(date);
 
@@ -145,8 +141,7 @@ class _CalendarPageState extends State<CalendarPage> {
                               context,
                               AddNewTaskPage.routeName,
                             ),
-                            icon:
-                                const Icon(Icons.add, size: 24, color: kWhite),
+                            icon: const Icon(Icons.add, size: 24, color: kWhite),
                           ),
                         ],
                       ),
@@ -154,8 +149,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     StreamBuilder(
                       stream: todos.snapshots(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
@@ -228,8 +222,7 @@ class _TodoCardState extends State<TodoCard> {
         ],
       ),
       child: ListTile(
-        onTap: () => Navigator.pushNamed(context, UpdateTaskPage.routeName,
-            arguments: widget.task),
+        onTap: () => Navigator.pushNamed(context, UpdateTaskPage.routeName, arguments: widget.task),
         leading: IconButton(
           icon: finished == true
               ? const Icon(Icons.check_circle, color: kPurple, size: 30)
@@ -244,8 +237,7 @@ class _TodoCardState extends State<TodoCard> {
                 .update({"finished": finished});
           },
         ),
-        title: Text(widget.task.name,
-            style: kSubtitle, overflow: TextOverflow.ellipsis),
+        title: Text(widget.task.name, style: kSubtitle, overflow: TextOverflow.ellipsis),
         subtitle: Text(
           '${widget.task.startTime} - ${widget.task.endTime}',
           style: kBodyText,

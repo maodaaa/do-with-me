@@ -1,7 +1,6 @@
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/core/styles/text_style.dart';
 import 'package:do_with_me/login_screen/signin_screen.dart';
-import 'package:do_with_me/widget/button.dart';
 import 'package:do_with_me/widget/showsnackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -37,9 +36,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: Text('Reset Password',
-            textAlign: TextAlign.left,
-            style: kHeading6.copyWith(color: kBlack)),
+        title: Text('Reset Password', textAlign: TextAlign.left, style: kHeading6.copyWith(color: kBlack)),
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         leading: IconButton(
@@ -100,8 +97,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       ),
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding:
-                          const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                      contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -141,11 +137,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   Future resetPassword() async {
     try {
-      await auth.sendPasswordResetEmail(
-          email: emailAddressController!.text.toLowerCase());
+      await auth.sendPasswordResetEmail(email: emailAddressController!.text.toLowerCase());
       if (!mounted) return;
-      showSnackbar(context,
-          "email reset link has send to ${emailAddressController!.text}");
+      showSnackbar(context, "email reset link has send to ${emailAddressController!.text}");
       Navigator.popAndPushNamed(context, SignInScreen.routeName);
     } on FirebaseAuthException catch (e) {
       showSnackbar(context, e.message.toString());

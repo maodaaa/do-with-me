@@ -2,9 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/core/styles/text_style.dart';
-import 'package:do_with_me/home_screen/home_screen.dart';
 import 'package:do_with_me/login_screen/signin_screen.dart';
-import 'package:do_with_me/service/firebase_auth_service.dart';
 import 'package:do_with_me/widget/button.dart';
 import 'package:do_with_me/widget/showsnackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -46,21 +44,6 @@ class _SignupScreenState extends State<SignupScreen> {
     emailAddressController?.dispose();
     passwordController?.dispose();
     super.dispose();
-  }
-
-  Future<void> _signUpInWitEmail(
-      String name, String email, String password) async {
-    setState(() {
-      _isLoading = true;
-    });
-    await FirebaseAuthService().signUpInWitEmail(
-      name,
-      email,
-      password,
-    );
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override
@@ -124,8 +107,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding:
-                          const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                      contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -176,8 +158,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding:
-                          const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
+                      contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -233,18 +214,14 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                             filled: true,
                             fillColor: Colors.white,
-                            contentPadding:
-                                const EdgeInsetsDirectional.fromSTEB(
-                                    16, 24, 0, 24),
+                            contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                             suffixIcon: InkWell(
                               onTap: () => setState(
                                 () => passwordVisibility = !passwordVisibility,
                               ),
                               focusNode: FocusNode(skipTraversal: true),
                               child: Icon(
-                                passwordVisibility
-                                    ? Icons.visibility_outlined
-                                    : Icons.visibility_off_outlined,
+                                passwordVisibility ? Icons.visibility_outlined : Icons.visibility_off_outlined,
                                 color: const Color(0xFF57636C),
                                 size: 22,
                               ),
@@ -350,8 +327,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           width: 100,
                           height: 30,
                           color: const Color(0x00FFFFFF),
-                          textStyle: kBodyText.copyWith(
-                              color: kPurple, fontWeight: FontWeight.w700),
+                          textStyle: kBodyText.copyWith(color: kPurple, fontWeight: FontWeight.w700),
                           elevation: 0,
                         ),
                       ),
@@ -368,14 +344,10 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Future signUpWithEmail() async {
     try {
-      var newUser = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailAddressController!.text,
-          password: passwordController!.text);
+      var newUser = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: emailAddressController!.text, password: passwordController!.text);
       if (newUser.additionalUserInfo!.isNewUser) {
-        await FirebaseFirestore.instance
-            .collection("users")
-            .doc(newUser.user?.uid)
-            .set({
+        await FirebaseFirestore.instance.collection("users").doc(newUser.user?.uid).set({
           "uid": newUser.user!.uid,
           "name": nameController!.text,
           "image_path": "",
@@ -385,8 +357,7 @@ class _SignupScreenState extends State<SignupScreen> {
         });
         newUser.user!.sendEmailVerification();
         if (!mounted) return;
-        showSnackbar(
-            context, "email verification has send to ${newUser.user!.email}");
+        showSnackbar(context, "email verification has send to ${newUser.user!.email}");
         Navigator.popAndPushNamed(context, SignInScreen.routeName);
       }
     } on FirebaseAuthException catch (e) {

@@ -26,33 +26,6 @@ class FirebaseAuthService {
     }
   }
 
-  Future<void> signInWithEmail(String email, String password) async {
-    try {
-      if (email.isNotEmpty && password.isNotEmpty) {
-        await _auth.signInWithEmailAndPassword(
-          email: email.toString(),
-          password: password.toString(),
-        );
-      }
-    } on FirebaseAuthException catch (e) {
-      e.stackTrace.toString();
-    }
-  }
-
-  Future<void> signUpInWitEmail(String name, String email, String password) async {
-    try {
-      if (email.isNotEmpty && password.isNotEmpty) {
-        await _auth.createUserWithEmailAndPassword(
-          email: email.toString(),
-          password: password.toString(),
-        );
-        await _auth.currentUser?.updateDisplayName(name);
-      }
-    } on FirebaseAuthException catch (e) {
-      e.stackTrace.toString();
-    }
-  }
-
   Future<void> signOut() async {
     _auth.signOut();
   }

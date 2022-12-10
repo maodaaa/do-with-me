@@ -1,14 +1,11 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/core/styles/text_style.dart';
 import 'package:do_with_me/login_screen/signin_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 
@@ -45,29 +42,18 @@ class _ProfilPageState extends State<ProfilPage> {
   }
 
   Future<bool> isCollectionExist(String collectionName) async {
-    var value = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .collection(collectionName)
-        .limit(1)
-        .get();
+    var value = await FirebaseFirestore.instance.collection('users').doc(uid).collection(collectionName).limit(1).get();
     return value.docs.isNotEmpty;
   }
 
   void getTodo() {
     StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .collection('todo')
-          .snapshots(),
+      stream: FirebaseFirestore.instance.collection('users').doc(uid).collection('todo').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           totalTask = snapshot.data!.docs.length;
-          finishedTask =
-              snapshot.data!.docs.where((e) => e['finised'] == true).length;
-          ongoingTask =
-              snapshot.data!.docs.where((e) => e['finised'] == false).length;
+          finishedTask = snapshot.data!.docs.where((e) => e['finised'] == true).length;
+          ongoingTask = snapshot.data!.docs.where((e) => e['finised'] == false).length;
         }
 
         return const SizedBox();
@@ -77,8 +63,7 @@ class _ProfilPageState extends State<ProfilPage> {
 
   void getUserData() async {
     StreamBuilder(
-      stream:
-          FirebaseFirestore.instance.collection('users').doc(uid).snapshots(),
+      stream: FirebaseFirestore.instance.collection('users').doc(uid).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final doc = snapshot.data;
@@ -151,10 +136,7 @@ class _ProfilPageState extends State<ProfilPage> {
                           imagePath = await uploadImage(File(file!.path));
 
                           if (imagePath.isNotEmpty) {
-                            FirebaseFirestore.instance
-                                .collection('users')
-                                .doc(uid)
-                                .update({'image_path': imagePath});
+                            FirebaseFirestore.instance.collection('users').doc(uid).update({'image_path': imagePath});
                           }
                           setState(() {});
                         },
@@ -245,8 +227,7 @@ class _ProfilPageState extends State<ProfilPage> {
                       context: context,
                       builder: (_) => AlertDialog(
                         title: Text('Delete Account', style: kHeading6),
-                        content: Text('Are you sure to delete your account?',
-                            style: kBodyText),
+                        content: Text('Are you sure to delete your account?', style: kBodyText),
                         actions: [
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -281,9 +262,7 @@ class _ProfilPageState extends State<ProfilPage> {
                 onPressed: () async {
                   await FirebaseAuth.instance.signOut().then(
                         (_) => Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (context) => const SignInScreen()),
-                            (route) => false),
+                            MaterialPageRoute(builder: (context) => const SignInScreen()), (route) => false),
                       );
                 },
                 child: const Padding(
