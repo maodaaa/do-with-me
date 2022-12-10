@@ -357,24 +357,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 50,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                auth.signOut();
-                                Navigator.pushReplacementNamed(context, SignInScreen.routeName);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: kPurple,
-                                textStyle: kHeading6,
-                              ),
-                              child: const Text('Sign Out'),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   ),
