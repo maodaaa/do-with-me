@@ -89,6 +89,27 @@ class _SignInScreenState extends State<SignInScreen> {
     });
     await FirebaseAuthService().signInWithGoogle();
     if (users.currentUser!.uid.isNotEmpty) {
+      final userCollectionRef = firestore.collection("users");
+      for (final providerProfile in users.currentUser!.providerData) {
+        final uid = users.currentUser!.uid;
+        final name = providerProfile.displayName;
+        final emailAddress = providerProfile.email;
+        final snapShot = await userCollectionRef.doc(uid).get();
+        if (snapShot.exists) {
+          await userCollectionRef.doc(uid).update({
+            "lastSignIn": FieldValue.serverTimestamp(),
+          });
+        } else {
+          await userCollectionRef.doc(uid).set({
+            "uid": uid,
+            "image_path": "",
+            "name": name,
+            "email": emailAddress,
+            "userCreated": FieldValue.serverTimestamp(),
+            "lastSignIn": FieldValue.serverTimestamp(),
+          });
+        }
+      }
       if (!mounted) return;
       Navigator.popAndPushNamed(context, HomeScreen.routeName);
     }
@@ -402,23 +423,12 @@ class _SignInScreenState extends State<SignInScreen> {
       if (users.currentUser != null) {
         if (users.currentUser!.emailVerified) {
           final userCollectionRef = firestore.collection("users");
-          for (final providerProfile in users.currentUser!.providerData) {
-            final uid = users.currentUser!.uid;
-            final name = providerProfile.displayName;
-            final emailAddress = providerProfile.email;
-            final snapShot = await userCollectionRef.doc(uid).get();
-            if (snapShot.exists) {
-              await userCollectionRef.doc(uid).update({
-                "lastSignIn": FieldValue.serverTimestamp(),
-              });
-            } else {
-              await userCollectionRef.doc(uid).set({
-                "name": name,
-                "email": emailAddress,
-                "userCreated": FieldValue.serverTimestamp(),
-                "lastSignIn": FieldValue.serverTimestamp(),
-              });
-            }
+          final uid = users.currentUser!.uid;
+          final snapShot = await userCollectionRef.doc(uid).get();
+          if (snapShot.exists) {
+            await userCollectionRef.doc(uid).update({
+              "lastSignIn": FieldValue.serverTimestamp(),
+            });
           }
           if (!mounted) return;
           Navigator.pushReplacementNamed(context, HomeScreen.routeName);

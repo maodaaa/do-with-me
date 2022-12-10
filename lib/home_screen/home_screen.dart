@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/core/styles/text_style.dart';
-import 'package:do_with_me/login_screen/signin_screen.dart';
 import 'package:do_with_me/todo/todo_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -354,24 +353,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                               ],
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 50,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                auth.signOut();
-                                Navigator.pushReplacementNamed(context, SignInScreen.routeName);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: kPurple,
-                                textStyle: kHeading6,
-                              ),
-                              child: const Text('Sign Out'),
                             ),
                           ),
                         ),

@@ -2,7 +2,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/core/styles/text_style.dart';
+import 'package:do_with_me/home_screen/home_screen.dart';
 import 'package:do_with_me/login_screen/signin_screen.dart';
+import 'package:do_with_me/service/firebase_auth_service.dart';
 import 'package:do_with_me/widget/button.dart';
 import 'package:do_with_me/widget/showsnackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,7 +29,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final formKey = GlobalKey<FormState>();
 
-  bool _isLoading = false;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -283,8 +285,15 @@ class _SignupScreenState extends State<SignupScreen> {
                     children: [
                       Expanded(
                         child: FFButtonWidget(
-                          onPressed: () {
-                            print('Button-Login pressed ...');
+                          onPressed: () async {
+                            try {
+                              await _loginGoogle();
+                            } on FirebaseAuthException catch (e) {
+                              showSnackbar(
+                                context,
+                                e.message.toString(),
+                              );
+                            }
                           },
                           text: 'Sign Up with Google',
                           icon: Image.asset(
@@ -355,6 +364,9 @@ class _SignupScreenState extends State<SignupScreen> {
           "userCreated": FieldValue.serverTimestamp(),
           "lastSignIn": FieldValue.serverTimestamp(),
         });
+        await newUser.user?.updateDisplayName(
+          nameController!.text,
+        );
         newUser.user!.sendEmailVerification();
         if (!mounted) return;
         showSnackbar(context, "email verification has send to ${newUser.user!.email}");
@@ -363,5 +375,41 @@ class _SignupScreenState extends State<SignupScreen> {
     } on FirebaseAuthException catch (e) {
       showSnackbar(context, e.message.toString());
     }
+  }
+
+  Future<void> _loginGoogle() async {
+    setState(() {
+      isLoading = true;
+    });
+    await FirebaseAuthService().signInWithGoogle();
+    if (users.currentUser!.uid.isNotEmpty) {
+      final userCollectionRef = firestore.collection("users");
+      for (final providerProfile in users.currentUser!.providerData) {
+        final uid = users.currentUser!.uid;
+        final name = providerProfile.displayName;
+        final emailAddress = providerProfile.email;
+        final snapShot = await userCollectionRef.doc(uid).get();
+        if (snapShot.exists) {
+          await userCollectionRef.doc(uid).update({
+            "lastSignIn": FieldValue.serverTimestamp(),
+          });
+        } else {
+          await userCollectionRef.doc(uid).set({
+            "uid": uid,
+            "image_path": "",
+            "name": name,
+            "email": emailAddress,
+            "userCreated": FieldValue.serverTimestamp(),
+            "lastSignIn": FieldValue.serverTimestamp(),
+          });
+        }
+      }
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+    }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 }

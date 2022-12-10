@@ -25,7 +25,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   AwesomeNotifications().initialize(
-      'resource://drawable/res_app_icon',
+      'resource://drawable/ic_launcher',
       [
         NotificationChannel(
           channelKey: 'task_channel',
