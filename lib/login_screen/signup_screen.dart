@@ -364,10 +364,8 @@ class _SignupScreenState extends State<SignupScreen> {
           "userCreated": FieldValue.serverTimestamp(),
           "lastSignIn": FieldValue.serverTimestamp(),
         });
-        await newUser.user?.updateDisplayName(
-          nameController!.text,
-        );
-        newUser.user!.sendEmailVerification();
+        await newUser.user!.updateDisplayName(nameController!.text);
+        await newUser.user!.sendEmailVerification();
         if (!mounted) return;
         showSnackbar(context, "email verification has send to ${newUser.user!.email}");
         Navigator.popAndPushNamed(context, SignInScreen.routeName);
