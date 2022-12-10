@@ -45,8 +45,7 @@ class _SignInScreenState extends State<SignInScreen> {
             context: context,
             builder: (context) => AlertDialog(
                   title: const Text('Allow Notifications'),
-                  content: const Text(
-                      'Our app would like to send you notifications'),
+                  content: const Text('Our app would like to send you notifications'),
                   actions: [
                     TextButton(
                       onPressed: () {
@@ -61,9 +60,8 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () => AwesomeNotifications()
-                          .requestPermissionToSendNotifications()
-                          .then((_) => Navigator.pop(context)),
+                      onPressed: () =>
+                          AwesomeNotifications().requestPermissionToSendNotifications().then((_) => Navigator.pop(context)),
                       child: const Text(
                         'Allow',
                         style: TextStyle(
@@ -91,6 +89,11 @@ class _SignInScreenState extends State<SignInScreen> {
       isLoading = true;
     });
     await FirebaseAuthService().signInWithGoogle();
+    if (users.currentUser!.uid.isNotEmpty) {
+      if (!mounted) return;
+      Navigator.popAndPushNamed(context, HomeScreen.routeName);
+    }
+
     setState(() {
       isLoading = false;
     });
@@ -118,26 +121,22 @@ class _SignInScreenState extends State<SignInScreen> {
                     children: [
                       Text('Sign in', style: kHeading5.copyWith(color: kBlack)),
                       Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(0, 16, 0, 0),
+                        padding: const EdgeInsetsDirectional.fromSTEB(0, 16, 0, 0),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    0, 16, 0, 0),
+                                padding: const EdgeInsetsDirectional.fromSTEB(0, 16, 0, 0),
                                 child: TextFormField(
                                   controller: emailAddressController,
                                   obscureText: false,
                                   decoration: InputDecoration(
                                     labelText: 'Email Address',
-                                    labelStyle:
-                                        kSubtitle.copyWith(color: kBlack),
+                                    labelStyle: kSubtitle.copyWith(color: kBlack),
                                     hintText: 'Enter your email here...',
-                                    hintStyle:
-                                        kBodyText.copyWith(color: kBlack),
+                                    hintStyle: kBodyText.copyWith(color: kBlack),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: const BorderSide(
                                         color: Color(0xFFF1F4F8),
@@ -168,9 +167,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                     ),
                                     filled: true,
                                     fillColor: Colors.white,
-                                    contentPadding:
-                                        const EdgeInsetsDirectional.fromSTEB(
-                                            16, 24, 0, 24),
+                                    contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 0, 24),
                                   ),
                                   style: kBodyText,
                                   maxLines: null,
@@ -180,8 +177,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                     }
                                     return null;
                                   },
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
+                                  autovalidateMode: AutovalidateMode.onUserInteraction,
                                 ),
                               ),
                             ),
@@ -189,8 +185,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                       ),
                       Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(0, 16, 0, 0),
+                        padding: const EdgeInsetsDirectional.fromSTEB(0, 16, 0, 0),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -234,19 +229,14 @@ class _SignInScreenState extends State<SignInScreen> {
                                   ),
                                   filled: true,
                                   fillColor: Colors.white,
-                                  contentPadding:
-                                      const EdgeInsetsDirectional.fromSTEB(
-                                          16, 24, 24, 24),
+                                  contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 24, 24, 24),
                                   suffixIcon: InkWell(
                                     onTap: () => setState(
-                                      () => passwordVisibility =
-                                          !passwordVisibility,
+                                      () => passwordVisibility = !passwordVisibility,
                                     ),
                                     focusNode: FocusNode(skipTraversal: true),
                                     child: Icon(
-                                      passwordVisibility
-                                          ? Icons.visibility_outlined
-                                          : Icons.visibility_off_outlined,
+                                      passwordVisibility ? Icons.visibility_outlined : Icons.visibility_off_outlined,
                                       color: const Color(0xFF57636C),
                                       size: 22,
                                     ),
@@ -259,8 +249,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   }
                                   return null;
                                 },
-                                autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
                               ),
                             ),
                           ],
@@ -274,8 +263,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           children: [
                             FFButtonWidget(
                               onPressed: () {
-                                Navigator.pushNamed(
-                                    context, ResetPasswordScreen.routeName);
+                                Navigator.pushNamed(context, ResetPasswordScreen.routeName);
                               },
                               text: 'Forgot Password?',
                               options: FFButtonOptions(
@@ -320,8 +308,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         ],
                       ),
                       Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(0, 24, 0, 24),
+                        padding: const EdgeInsetsDirectional.fromSTEB(0, 24, 0, 24),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -371,8 +358,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         ],
                       ),
                       Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(0, 24, 0, 24),
+                        padding: const EdgeInsetsDirectional.fromSTEB(0, 24, 0, 24),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -383,17 +369,14 @@ class _SignInScreenState extends State<SignInScreen> {
                             ),
                             FFButtonWidget(
                               onPressed: () {
-                                Navigator.pushNamed(
-                                    context, SignupScreen.routeName);
+                                Navigator.pushNamed(context, SignupScreen.routeName);
                               },
                               text: 'Sign Up',
                               options: FFButtonOptions(
                                 width: 100,
                                 height: 30,
                                 color: const Color(0x00FFFFFF),
-                                textStyle: kBodyText.copyWith(
-                                    color: kPurple,
-                                    fontWeight: FontWeight.w700),
+                                textStyle: kBodyText.copyWith(color: kPurple, fontWeight: FontWeight.w700),
                                 elevation: 0,
                               ),
                             ),
@@ -444,8 +427,7 @@ class _SignInScreenState extends State<SignInScreen> {
           passwordController!.clear();
         } else {
           if (!mounted) return;
-          showSnackbar(context,
-              "your account is not verified, Check email for verified account");
+          showSnackbar(context, "your account is not verified, Check email for verified account");
         }
       }
     } on FirebaseAuthException catch (e) {

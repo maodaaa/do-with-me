@@ -48,27 +48,24 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: kPurple,
                   ),
                   child: Padding(
-                    padding:
-                        const EdgeInsetsDirectional.fromSTEB(17, 50, 17, 0),
+                    padding: const EdgeInsetsDirectional.fromSTEB(17, 50, 17, 0),
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Padding(
-                          padding:
-                              const EdgeInsetsDirectional.fromSTEB(0, 8, 0, 0),
+                          padding: const EdgeInsetsDirectional.fromSTEB(0, 8, 0, 0),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Text(
-                                "Maorid",
+                                "${auth.currentUser!.displayName}",
                                 style: kHeading5.copyWith(color: kWhite),
                               ),
                             ],
                           ),
                         ),
                         Padding(
-                          padding:
-                              const EdgeInsetsDirectional.fromSTEB(0, 8, 0, 0),
+                          padding: const EdgeInsetsDirectional.fromSTEB(0, 8, 0, 0),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             children: [
@@ -99,8 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(
-                              17, 16, 17, 0),
+                          padding: const EdgeInsetsDirectional.fromSTEB(17, 16, 17, 0),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -120,8 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   padding: const EdgeInsets.all(4),
                                 ),
                                 onPressed: () {
-                                  Navigator.pushNamed(
-                                      context, ToDoPage.routeName);
+                                  Navigator.pushNamed(context, ToDoPage.routeName);
                                 },
                                 child: Text(
                                   'See all',
@@ -136,22 +131,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                 .collection('users')
                                 .doc(auth.currentUser!.uid)
                                 .collection("todo")
-                                .where('date',
-                                    isEqualTo: DateFormat('dd MMMM yyyy')
-                                        .format(_selectedDay!))
+                                .where('date', isEqualTo: DateFormat('dd MMMM yyyy').format(_selectedDay!))
                                 .orderBy('start_time', descending: false)
                                 .limit(2)
                                 .snapshots(),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<QuerySnapshot> snapshot) {
+                            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                               if (snapshot.hasError) {
                                 return Text(
                                   'Something went wrong',
                                   style: kHeading6Normal,
                                 );
                               }
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
                                 return Text(
                                   'Loading',
                                   style: kHeading6Normal,
@@ -175,22 +166,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                       id: snapshot.data!.docs[index].id,
                                       name: snapshot.data?.docs[index]['name'],
                                       date: snapshot.data?.docs[index]['date'],
-                                      sTime: snapshot.data?.docs[index]
-                                          ['start_time'],
-                                      eTime: snapshot.data?.docs[index]
-                                          ['end_time'],
-                                      category: snapshot.data?.docs[index]
-                                          ['category'],
-                                      colorCategory: snapshot.data?.docs[index]
-                                          ['color_category'],
-                                      priority: snapshot.data?.docs[index]
-                                          ['priority'],
-                                      colorPriority: snapshot.data?.docs[index]
-                                          ['color_priority'],
-                                      reminder: snapshot.data?.docs[index]
-                                          ['reminder'],
-                                      notes: snapshot.data?.docs[index]
-                                          ['notes'],
+                                      sTime: snapshot.data?.docs[index]['start_time'],
+                                      eTime: snapshot.data?.docs[index]['end_time'],
+                                      category: snapshot.data?.docs[index]['category'],
+                                      colorCategory: snapshot.data?.docs[index]['color_category'],
+                                      priority: snapshot.data?.docs[index]['priority'],
+                                      colorPriority: snapshot.data?.docs[index]['color_priority'],
+                                      reminder: snapshot.data?.docs[index]['reminder'],
+                                      notes: snapshot.data?.docs[index]['notes'],
                                     );
                                   }),
                                 );
@@ -199,8 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               return Container();
                             }),
                         Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(
-                              17, 16, 17, 0),
+                          padding: const EdgeInsetsDirectional.fromSTEB(17, 16, 17, 0),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -222,16 +204,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: kWhite,
                           ),
                           child: Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(
-                                0, 4, 0, 0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(0, 4, 0, 0),
                             child: ListView(
                               padding: EdgeInsets.zero,
                               shrinkWrap: true,
                               scrollDirection: Axis.horizontal,
                               children: [
                                 Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
-                                      16, 8, 8, 8),
+                                  padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
                                   child: Container(
                                     width: 160,
                                     height: 100,
@@ -247,37 +227,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Padding(
-                                      padding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              12, 8, 12, 8),
+                                      padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 12, 8),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           const Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    0, 0, 0, 12),
+                                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 12),
                                             child: Icon(
                                               Icons.school,
                                               color: Colors.white,
                                               size: 44,
                                             ),
                                           ),
-                                          Text('School',
-                                              style: kBodyText.copyWith(
-                                                  color: Colors.white)),
+                                          Text('School', style: kBodyText.copyWith(color: Colors.white)),
                                         ],
                                       ),
                                     ),
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
-                                      16, 8, 8, 8),
+                                  padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
                                   child: Container(
                                     width: 160,
                                     height: 100,
@@ -293,37 +264,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Padding(
-                                      padding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              12, 8, 12, 8),
+                                      padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 12, 8),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           const Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    0, 0, 0, 12),
+                                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 12),
                                             child: Icon(
                                               Icons.work,
                                               color: Colors.white,
                                               size: 44,
                                             ),
                                           ),
-                                          Text('Work',
-                                              style: kBodyText.copyWith(
-                                                  color: Colors.white)),
+                                          Text('Work', style: kBodyText.copyWith(color: Colors.white)),
                                         ],
                                       ),
                                     ),
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
-                                      16, 8, 8, 8),
+                                  padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
                                   child: Container(
                                     width: 160,
                                     height: 100,
@@ -339,37 +301,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Padding(
-                                      padding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              12, 8, 12, 8),
+                                      padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 12, 8),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           const Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    0, 0, 0, 12),
+                                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 12),
                                             child: Icon(
                                               Icons.sports,
                                               color: Colors.white,
                                               size: 44,
                                             ),
                                           ),
-                                          Text('Sport',
-                                              style: kBodyText.copyWith(
-                                                  color: Colors.white)),
+                                          Text('Sport', style: kBodyText.copyWith(color: Colors.white)),
                                         ],
                                       ),
                                     ),
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
-                                      16, 8, 8, 8),
+                                  padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
                                   child: Container(
                                     width: 160,
                                     height: 100,
@@ -385,29 +338,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Padding(
-                                      padding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              12, 8, 12, 8),
+                                      padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 12, 8),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           const Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    0, 0, 0, 12),
+                                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 12),
                                             child: Icon(
                                               Icons.mediation,
                                               color: Colors.white,
                                               size: 44,
                                             ),
                                           ),
-                                          Text('Meditation',
-                                              style: kBodyText.copyWith(
-                                                  color: Colors.white)),
+                                          Text('Meditation', style: kBodyText.copyWith(color: Colors.white)),
                                         ],
                                       ),
                                     ),
@@ -425,8 +370,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: ElevatedButton(
                               onPressed: () {
                                 auth.signOut();
-                                Navigator.pushReplacementNamed(
-                                    context, SignInScreen.routeName);
+                                Navigator.pushReplacementNamed(context, SignInScreen.routeName);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: kPurple,
@@ -566,9 +510,7 @@ class TaskCard extends StatelessWidget {
             ],
           ),
         ),
-        trailing: Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: Icon(Icons.circle, color: otherColor)),
+        trailing: Padding(padding: const EdgeInsets.only(right: 10), child: Icon(Icons.circle, color: otherColor)),
       ),
     );
   }
