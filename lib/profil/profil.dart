@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/core/styles/text_style.dart';
@@ -40,14 +39,10 @@ class _ProfilPageState extends State<ProfilPage> {
   }
 
   Future<bool> isCollectionExist(String collectionName) async {
-    var value = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .collection(collectionName)
-        .limit(1)
-        .get();
+    var value = await FirebaseFirestore.instance.collection('users').doc(uid).collection(collectionName).limit(1).get();
     return value.docs.isNotEmpty;
   }
+
 
   Future getUserData() async {
     FirebaseFirestore.instance
@@ -57,6 +52,7 @@ class _ProfilPageState extends State<ProfilPage> {
         .listen((userData) => setState(() {
               imagePath = userData.data()!['image_path'];
             }));
+
   }
 
   @override
@@ -124,10 +120,7 @@ class _ProfilPageState extends State<ProfilPage> {
                           imagePath = await uploadImage(File(file!.path));
 
                           if (imagePath.isNotEmpty) {
-                            FirebaseFirestore.instance
-                                .collection('users')
-                                .doc(uid)
-                                .update({'image_path': imagePath});
+                            FirebaseFirestore.instance.collection('users').doc(uid).update({'image_path': imagePath});
                           }
                           setState(() {});
                         },
@@ -236,8 +229,7 @@ class _ProfilPageState extends State<ProfilPage> {
                       context: context,
                       builder: (_) => AlertDialog(
                         title: Text('Delete Account', style: kHeading6),
-                        content: Text('Are you sure to delete your account?',
-                            style: kBodyText),
+                        content: Text('Are you sure to delete your account?', style: kBodyText),
                         actions: [
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -283,9 +275,7 @@ class _ProfilPageState extends State<ProfilPage> {
                 onPressed: () async {
                   await FirebaseAuth.instance.signOut().then(
                         (_) => Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (context) => const SignInScreen()),
-                            (route) => false),
+                            MaterialPageRoute(builder: (context) => const SignInScreen()), (route) => false),
                       );
                 },
                 child: const Padding(
