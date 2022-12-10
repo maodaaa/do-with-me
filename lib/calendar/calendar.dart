@@ -1,14 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/core/styles/text_style.dart';
-import 'package:do_with_me/core/utils/routes.dart';
 import 'package:do_with_me/tasks/add_task_page.dart';
 import 'package:do_with_me/tasks/task_model.dart';
 import 'package:do_with_me/tasks/update_task_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
@@ -101,6 +98,7 @@ class _CalendarPageState extends State<CalendarPage> {
                         ),
                       );
                     }
+                    return null;
                   },
                 ),
               ),
@@ -157,32 +155,45 @@ class _CalendarPageState extends State<CalendarPage> {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return const Center(
-                            child: CircularProgressIndicator(),
+                            child: CircularProgressIndicator(color: kWhite),
                           );
                         } else if (snapshot.hasData) {
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: snapshot.data?.docs.length,
-                            itemBuilder: (context, index) {
-                              final todo = snapshot.data?.docs[index];
-                              Task task = Task(
-                                uid: uid,
-                                id: todo!.id,
-                                name: todo['name'],
-                                date: todo['date'],
-                                startTime: todo['start_time'],
-                                endTime: todo['end_time'],
-                                category: todo['category'],
-                                colorCategory: todo['color_category'],
-                                priority: todo['priority'],
-                                colorPriority: todo['color_priority'],
-                                reminder: todo['reminder'],
-                                notes: todo['notes'],
-                                finished: todo['finished'],
-                              );
-                              return TodoCard(task: task);
-                            },
-                          );
+                          if (snapshot.data!.docs.isEmpty) {
+                            return Center(
+                              child: Text(
+                                'No Task',
+                                style: GoogleFonts.inter(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w400,
+                                  color: kWhite,
+                                ),
+                              ),
+                            );
+                          } else {
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: snapshot.data?.docs.length,
+                              itemBuilder: (context, index) {
+                                final todo = snapshot.data?.docs[index];
+                                Task task = Task(
+                                  uid: uid,
+                                  id: todo!.id,
+                                  name: todo['name'],
+                                  date: todo['date'],
+                                  startTime: todo['start_time'],
+                                  endTime: todo['end_time'],
+                                  category: todo['category'],
+                                  colorCategory: todo['color_category'],
+                                  priority: todo['priority'],
+                                  colorPriority: todo['color_priority'],
+                                  reminder: todo['reminder'],
+                                  notes: todo['notes'],
+                                  finished: todo['finished'],
+                                );
+                                return TodoCard(task: task);
+                              },
+                            );
+                          }
                         } else {
                           return const Text('Gagal Mengambil data!');
                         }
