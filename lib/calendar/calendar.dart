@@ -97,6 +97,7 @@ class _CalendarPageState extends State<CalendarPage> {
                         ),
                       );
                     }
+                    return null;
                   },
                 ),
               ),
@@ -151,32 +152,45 @@ class _CalendarPageState extends State<CalendarPage> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
                           return const Center(
-                            child: CircularProgressIndicator(),
+                            child: CircularProgressIndicator(color: kWhite),
                           );
                         } else if (snapshot.hasData) {
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: snapshot.data?.docs.length,
-                            itemBuilder: (context, index) {
-                              final todo = snapshot.data?.docs[index];
-                              Task task = Task(
-                                uid: uid,
-                                id: todo!.id,
-                                name: todo['name'],
-                                date: todo['date'],
-                                startTime: todo['start_time'],
-                                endTime: todo['end_time'],
-                                category: todo['category'],
-                                colorCategory: todo['color_category'],
-                                priority: todo['priority'],
-                                colorPriority: todo['color_priority'],
-                                reminder: todo['reminder'],
-                                notes: todo['notes'],
-                                finished: todo['finished'],
-                              );
-                              return TodoCard(task: task);
-                            },
-                          );
+                          if (snapshot.data!.docs.isEmpty) {
+                            return Center(
+                              child: Text(
+                                'No Task',
+                                style: GoogleFonts.inter(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w400,
+                                  color: kWhite,
+                                ),
+                              ),
+                            );
+                          } else {
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: snapshot.data?.docs.length,
+                              itemBuilder: (context, index) {
+                                final todo = snapshot.data?.docs[index];
+                                Task task = Task(
+                                  uid: uid,
+                                  id: todo!.id,
+                                  name: todo['name'],
+                                  date: todo['date'],
+                                  startTime: todo['start_time'],
+                                  endTime: todo['end_time'],
+                                  category: todo['category'],
+                                  colorCategory: todo['color_category'],
+                                  priority: todo['priority'],
+                                  colorPriority: todo['color_priority'],
+                                  reminder: todo['reminder'],
+                                  notes: todo['notes'],
+                                  finished: todo['finished'],
+                                );
+                                return TodoCard(task: task);
+                              },
+                            );
+                          }
                         } else {
                           return const Text('Gagal Mengambil data!');
                         }

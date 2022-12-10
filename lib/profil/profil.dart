@@ -20,9 +20,6 @@ class ProfilPage extends StatefulWidget {
 class _ProfilPageState extends State<ProfilPage> {
   String imagePath = '';
   String name = '';
-  int totalTask = 0;
-  int finishedTask = 0;
-  int ongoingTask = 0;
   bool status = true;
 
   final String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -46,45 +43,32 @@ class _ProfilPageState extends State<ProfilPage> {
     return value.docs.isNotEmpty;
   }
 
-  void getTodo() {
-    StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('users').doc(uid).collection('todo').snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          totalTask = snapshot.data!.docs.length;
-          finishedTask = snapshot.data!.docs.where((e) => e['finised'] == true).length;
-          ongoingTask = snapshot.data!.docs.where((e) => e['finised'] == false).length;
-        }
 
-        return const SizedBox();
-      },
-    );
-  }
+  Future getUserData() async {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .snapshots()
+        .listen((userData) => setState(() {
+              imagePath = userData.data()!['image_path'];
+            }));
 
-  void getUserData() async {
-    StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('users').doc(uid).snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final doc = snapshot.data;
-          name = doc!['name'];
-          imagePath = doc['image_path'];
-        }
-        return const SizedBox();
-      },
-    );
   }
 
   @override
-  void setState(VoidCallback fn) {
-    // TODO: implement setState
-    super.setState(fn);
-    getTodo();
+  void initState() {
+    super.initState();
     getUserData();
   }
 
   @override
   Widget build(BuildContext context) {
+    final auth = FirebaseAuth.instance;
+    Query<Map<String, dynamic>> todos = FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection("todo");
+
     return Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
@@ -147,51 +131,69 @@ class _ProfilPageState extends State<ProfilPage> {
               ),
               const SizedBox(height: 10),
               Text(
-                name.isEmpty ? 'John Doe' : name,
+                auth.currentUser!.displayName ?? 'John Doe',
                 style: kHeading5,
               ),
               const SizedBox(height: 25),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Column(
-                    children: [
-                      Text(
-                        totalTask.toString(),
-                        style: kHeading6,
-                      ),
-                      Text(
-                        "Total Task",
-                        style: kBodyText,
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      Text(
-                        finishedTask.toString(),
-                        style: kHeading6,
-                      ),
-                      Text(
-                        "Complete",
-                        style: kBodyText,
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      Text(
-                        ongoingTask.toString(),
-                        style: kHeading6,
-                      ),
-                      Text(
-                        "Ongoing",
-                        style: kBodyText,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              StreamBuilder(
+                  stream: todos.snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                          child: CircularProgressIndicator(color: kPurple));
+                    }
+                    final todo = snapshot.data!.docs;
+                    final total = todo.length.toString();
+                    final complete = todo
+                        .where((e) => e['finished'] == true)
+                        .length
+                        .toString();
+                    final ongoing = todo
+                        .where((e) => e['finished'] == false)
+                        .length
+                        .toString();
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Column(
+                          children: [
+                            Text(
+                              total.isNotEmpty ? total : '0',
+                              style: kHeading6,
+                            ),
+                            Text(
+                              "Total Task",
+                              style: kBodyText,
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text(
+                              complete.isNotEmpty ? complete : '0',
+                              style: kHeading6,
+                            ),
+                            Text(
+                              "Complete",
+                              style: kBodyText,
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text(
+                              ongoing.isNotEmpty ? ongoing : '0',
+                              style: kHeading6,
+                            ),
+                            Text(
+                              "Ongoing",
+                              style: kBodyText,
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  }),
               const SizedBox(height: 25),
               const Divider(height: 1, color: Color.fromRGBO(0, 0, 0, 0.300)),
               Container(
@@ -240,9 +242,20 @@ class _ProfilPageState extends State<ProfilPage> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: kPurple,
                             ),
-                            onPressed: () async {
-                              final user = FirebaseAuth.instance.currentUser;
-                              user!.delete();
+                            onPressed: () {
+                              FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(uid)
+                                  .delete()
+                                  .then((_) {
+                                User? user = FirebaseAuth.instance.currentUser;
+                                user!.delete().then((_) => Navigator.of(context)
+                                    .pushAndRemoveUntil(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const SignInScreen()),
+                                        (route) => false));
+                              });
                             },
                             child: const Text('Confirm'),
                           ),
