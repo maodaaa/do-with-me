@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/core/styles/text_style.dart';
 import 'package:do_with_me/login_screen/signin_screen.dart';
+import 'package:do_with_me/widget/inital_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,7 @@ class _ProfilPageState extends State<ProfilPage> {
   }
 
   Future getUserData() async {
-    FirebaseFirestore.instance.collection('users').doc(uid).snapshots().listen((userData) => (() {
+    FirebaseFirestore.instance.collection('users').doc(uid).snapshots().listen((userData) => setState(() {
           imagePath = userData.data()!['image_path'];
         }));
   }
@@ -113,6 +114,7 @@ class _ProfilPageState extends State<ProfilPage> {
                           if (imagePath.isNotEmpty) {
                             FirebaseFirestore.instance.collection('users').doc(uid).update({'image_path': imagePath});
                           }
+                          setState(() {});
                         },
                       ),
                     ),
@@ -250,7 +252,7 @@ class _ProfilPageState extends State<ProfilPage> {
                 onPressed: () async {
                   await FirebaseAuth.instance.signOut().then(
                         (_) => Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(builder: (context) => const SignInScreen()), (route) => false),
+                            MaterialPageRoute(builder: (context) => const InitialPage()), (route) => false),
                       );
                 },
                 child: const Padding(
