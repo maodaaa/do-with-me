@@ -30,14 +30,23 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   auto_size_text: ^3.0.0
+  awesome_notifications: ^0.7.4+1
+  circle_bottom_navigation_bar: ^1.0.0
+  cloud_firestore: ^4.1.0
   cupertino_icons: ^1.0.2
   firebase_auth: ^4.1.2
   firebase_core: ^2.2.0
+  firebase_storage: ^11.0.6
+  path:
   flutter:
     sdk: flutter
+  flutter_slidable: ^2.0.0
   font_awesome_flutter: ^10.2.1
   google_fonts: ^3.0.1
   google_sign_in: ^5.4.2
+  intl: ^0.17.0
+  table_calendar: ^3.0.8
+  image_picker: ^0.8.6
 
 dev_dependencies:
   flutter_lints: ^2.0.0
