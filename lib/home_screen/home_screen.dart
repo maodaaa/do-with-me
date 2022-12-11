@@ -204,153 +204,21 @@ class _HomeScreenState extends State<HomeScreen> {
                               shrinkWrap: true,
                               scrollDirection: Axis.horizontal,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
-                                  child: Container(
-                                    width: 160,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      color: kRedCategory,
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          blurRadius: 3,
-                                          color: Color(0x33000000),
-                                          offset: Offset(0, 1),
-                                        )
-                                      ],
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 12, 8),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          const Padding(
-                                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 12),
-                                            child: Icon(
-                                              Icons.school,
-                                              color: Colors.white,
-                                              size: 44,
-                                            ),
-                                          ),
-                                          Text('School', style: kBodyText.copyWith(color: Colors.white)),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: const CategoryCard(name: "School", colorCategory: kRedCategory),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
-                                  child: Container(
-                                    width: 160,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      color: kYellowCategory,
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          blurRadius: 3,
-                                          color: Color(0x33000000),
-                                          offset: Offset(0, 1),
-                                        )
-                                      ],
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 12, 8),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          const Padding(
-                                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 12),
-                                            child: Icon(
-                                              Icons.work,
-                                              color: Colors.white,
-                                              size: 44,
-                                            ),
-                                          ),
-                                          Text('Work', style: kBodyText.copyWith(color: Colors.white)),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: const CategoryCard(name: "Work", colorCategory: kYellowCategory),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
-                                  child: Container(
-                                    width: 160,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      color: kGreenCategory,
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          blurRadius: 3,
-                                          color: Color(0x33000000),
-                                          offset: Offset(0, 1),
-                                        )
-                                      ],
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 12, 8),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          const Padding(
-                                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 12),
-                                            child: Icon(
-                                              Icons.sports,
-                                              color: Colors.white,
-                                              size: 44,
-                                            ),
-                                          ),
-                                          Text('Sport', style: kBodyText.copyWith(color: Colors.white)),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: const CategoryCard(name: "Sport", colorCategory: kGreenCategory),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
-                                  child: Container(
-                                    width: 160,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      color: kBrownCategory,
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          blurRadius: 3,
-                                          color: Color(0x33000000),
-                                          offset: Offset(0, 1),
-                                        )
-                                      ],
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 12, 8),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          const Padding(
-                                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 12),
-                                            child: Icon(
-                                              Icons.mediation,
-                                              color: Colors.white,
-                                              size: 44,
-                                            ),
-                                          ),
-                                          Text('Meditation', style: kBodyText.copyWith(color: Colors.white)),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: const CategoryCard(name: "Meditation", colorCategory: kBrownCategory),
                                 ),
                               ],
                             ),
@@ -369,74 +237,69 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// class TaskCard extends StatelessWidget {
-//   String uid;
-//   String id;
-//   String taskName;
-//   String startTime;
-//   String endTime;
-//   TaskCard({
-//     Key? key,
-//     required this.uid,
-//     required this.id,
-//     required this.taskName,
-//     required this.startTime,
-//     required this.endTime,
-//   }) : super(key: key);
+class CategoryCard extends StatelessWidget {
+  final String name;
+  final Color colorCategory;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       margin: const EdgeInsets.symmetric(vertical: 5),
-//       width: MediaQuery.of(context).size.width - 30,
-//       height: 70,
-//       decoration: const BoxDecoration(
-//         color: kSoftGrey,
-//         borderRadius: BorderRadius.all(
-//           Radius.circular(10),
-//         ),
-//       ),
-//       child: Padding(
-//         padding: const EdgeInsets.all(10),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             AutoSizeText(
-//               taskName,
-//               style: kSubtitle.copyWith(color: kBlack),
-//             ),
-//             const SizedBox(
-//               height: 6,
-//             ),
-//             Expanded(
-//               child: Text(
-//                 "$startTime - $endTime",
-//                 style: kBodyText.copyWith(color: kBlack),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+  const CategoryCard({super.key, required this.name, required this.colorCategory});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
+      child: Container(
+        width: 160,
+        height: 100,
+        decoration: BoxDecoration(
+          color: colorCategory,
+          boxShadow: const [
+            BoxShadow(
+              blurRadius: 3,
+              color: Color(0x33000000),
+              offset: Offset(0, 1),
+            )
+          ],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 12, 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 12),
+                child: Icon(
+                  Icons.school,
+                  color: Colors.white,
+                  size: 44,
+                ),
+              ),
+              Text(name, style: kBodyText.copyWith(color: Colors.white)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class TaskCard extends StatelessWidget {
-  String uid;
-  String id;
-  String name;
-  String date;
-  String sTime;
-  String eTime;
-  String category;
-  String colorCategory;
-  String priority;
-  String colorPriority;
-  String reminder;
-  String notes;
+  final String uid;
+  final String id;
+  final String name;
+  final String date;
+  final String sTime;
+  final String eTime;
+  final String category;
+  final String colorCategory;
+  final String priority;
+  final String colorPriority;
+  final String reminder;
+  final String notes;
 
-  TaskCard({
+  const TaskCard({
     super.key,
     required this.uid,
     required this.id,

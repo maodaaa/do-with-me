@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:do_with_me/core/styles/colors.dart';
 import 'package:do_with_me/core/styles/text_style.dart';
 import 'package:do_with_me/login_screen/signin_screen.dart';
+import 'package:do_with_me/widget/inital_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -39,33 +40,26 @@ class _ProfilPageState extends State<ProfilPage> {
   }
 
   Future<bool> isCollectionExist(String collectionName) async {
-    var value = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .collection(collectionName)
-        .limit(1)
-        .get();
+    var value = await FirebaseFirestore.instance.collection('users').doc(uid).collection(collectionName).limit(1).get();
     return value.docs.isNotEmpty;
   }
 
   Future getUserData() async {
-    FirebaseFirestore.instance.collection('users').doc(uid).snapshots().listen(
-        (userData) => (() => imagePath = userData.data()!['image_path']));
+    FirebaseFirestore.instance.collection('users').doc(uid).snapshots().listen((userData) => setState(() {
+          imagePath = userData.data()!['image_path'];
+        }));
   }
 
   @override
   void initState() {
     super.initState();
-    setState(() => getUserData());
+    getUserData();
   }
 
   @override
   Widget build(BuildContext context) {
     final auth = FirebaseAuth.instance;
-    Query<Map<String, dynamic>> todos = FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .collection("todo");
+    Query<Map<String, dynamic>> todos = FirebaseFirestore.instance.collection('users').doc(uid).collection("todo");
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -118,11 +112,9 @@ class _ProfilPageState extends State<ProfilPage> {
                           imagePath = await uploadImage(File(file!.path));
 
                           if (imagePath.isNotEmpty) {
-                            FirebaseFirestore.instance
-                                .collection('users')
-                                .doc(uid)
-                                .update({'image_path': imagePath});
+                            FirebaseFirestore.instance.collection('users').doc(uid).update({'image_path': imagePath});
                           }
+                          setState(() {});
                         },
                       ),
                     ),
@@ -139,19 +131,12 @@ class _ProfilPageState extends State<ProfilPage> {
                   stream: todos.snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                          child: CircularProgressIndicator(color: kPurple));
+                      return const Center(child: CircularProgressIndicator(color: kPurple));
                     }
                     final todo = snapshot.data!.docs;
                     final total = todo.length.toString();
-                    final complete = todo
-                        .where((e) => e['finished'] == true)
-                        .length
-                        .toString();
-                    final ongoing = todo
-                        .where((e) => e['finished'] == false)
-                        .length
-                        .toString();
+                    final complete = todo.where((e) => e['finished'] == true).length.toString();
+                    final ongoing = todo.where((e) => e['finished'] == false).length.toString();
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -229,8 +214,7 @@ class _ProfilPageState extends State<ProfilPage> {
                       context: context,
                       builder: (_) => AlertDialog(
                         title: Text('Delete Account', style: kHeading6),
-                        content: Text('Are you sure to delete your account?',
-                            style: kBodyText),
+                        content: Text('Are you sure to delete your account?', style: kBodyText),
                         actions: [
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -244,19 +228,10 @@ class _ProfilPageState extends State<ProfilPage> {
                               backgroundColor: kPurple,
                             ),
                             onPressed: () async {
-                              await FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(uid)
-                                  .delete()
-                                  .then((_) {
-                                FirebaseAuth.instance.currentUser
-                                    ?.delete()
-                                    .then((_) => Navigator.of(context)
-                                        .pushAndRemoveUntil(
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const SignInScreen()),
-                                            (route) => false));
+                              await FirebaseFirestore.instance.collection('users').doc(uid).delete().then((_) {
+                                FirebaseAuth.instance.currentUser?.delete().then((_) => Navigator.of(context)
+                                    .pushAndRemoveUntil(
+                                        MaterialPageRoute(builder: (context) => const SignInScreen()), (route) => false));
                               });
                             },
                             child: const Text('Confirm'),
@@ -277,9 +252,7 @@ class _ProfilPageState extends State<ProfilPage> {
                 onPressed: () async {
                   await FirebaseAuth.instance.signOut().then(
                         (_) => Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (context) => const SignInScreen()),
-                            (route) => false),
+                            MaterialPageRoute(builder: (context) => const InitialPage()), (route) => false),
                       );
                 },
                 child: const Padding(
