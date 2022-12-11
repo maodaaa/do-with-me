@@ -48,15 +48,16 @@ class _ProfilPageState extends State<ProfilPage> {
     return value.docs.isNotEmpty;
   }
 
-  Future getUserData() async {
+  getUserData() {
     FirebaseFirestore.instance.collection('users').doc(uid).snapshots().listen(
-        (userData) => (() => imagePath = userData.data()!['image_path']));
+        (userData) =>
+            setState(() => imagePath = userData.data()!['image_path']));
   }
 
   @override
   void initState() {
     super.initState();
-    setState(() => getUserData());
+    getUserData();
   }
 
   @override
