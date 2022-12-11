@@ -90,14 +90,8 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
       "finished": widget.task.finished,
     });
 
-    updateReminderNotification(
-      widget.task.date, 
-      widget.task.startTime, 
-      taskController.text, 
-      dateController.text, 
-      sTimeController.text, 
-      reminderController.text
-    );
+    updateReminderNotification(widget.task.date, widget.task.startTime, taskController.text, dateController.text,
+        sTimeController.text, reminderController.text);
   }
 
   void deleteTask(String taskId) {
@@ -222,15 +216,12 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     DateTime? pickedDate = await showDatePicker(
                         context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime(2101));
                     if (pickedDate != null) {
-                      print(pickedDate);
                       String formattedDate = DateFormat('dd MMMM yyyy').format(pickedDate);
-                      print(formattedDate);
+
                       setState(() {
                         dateController.text = formattedDate;
                       });
-                    } else {
-                      print("Date is not selected");
-                    }
+                    } else {}
                   },
                 ),
               ),
@@ -290,18 +281,15 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                           );
 
                           if (pickedTime != null) {
-                            print(pickedTime.format(context));
+                            if (!mounted) return;
                             DateTime parsedTime = DateFormat.jm().parse(pickedTime.format(context).toString());
-                            print(parsedTime);
+
                             String formattedTime = DateFormat('HH:mm').format(parsedTime);
-                            print(formattedTime);
 
                             setState(() {
                               sTimeController.text = formattedTime; //set the value of text field.
                             });
-                          } else {
-                            print("Time is not selected");
-                          }
+                          } else {}
                         },
                       ),
                     )),
@@ -357,18 +345,15 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                             );
 
                             if (pickedTime != null) {
-                              print(pickedTime.format(context));
+                              if (!mounted) return;
                               DateTime parsedTime = DateFormat.jm().parse(pickedTime.format(context).toString());
-                              print(parsedTime);
+
                               String formattedTime = DateFormat('HH:mm').format(parsedTime);
-                              print(formattedTime);
 
                               setState(() {
                                 eTimeController.text = formattedTime; //set the value of text field.
                               });
-                            } else {
-                              print("Time is not selected");
-                            }
+                            } else {}
                           },
                         ),
                       ),
@@ -389,8 +374,8 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                                 : value == "Work"
                                     ? "Work"
                                     : value == "Sport"
-                                      ? "Sport"
-                                      : "Meditation"),
+                                        ? "Sport"
+                                        : "Meditation"),
                           ))
                       .toList(),
                   onChanged: (String? value) {
@@ -440,8 +425,8 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                           : categoryController.text == "Work"
                               ? kYellowCategory
                               : categoryController.text == "Sport"
-                                ? kGreenCategory
-                                : kBrownCategory,
+                                  ? kGreenCategory
+                                  : kBrownCategory,
                     ),
                   ),
                 ),
@@ -635,7 +620,6 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     onPressed: () {
                       updateTask();
                       Navigator.pop(context);
-                      print('Task Updated');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kPurple,
@@ -654,7 +638,6 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     onPressed: () {
                       deleteTask(taskId);
                       Navigator.pop(context);
-                      print('Task Deleted');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kRedCategory,
